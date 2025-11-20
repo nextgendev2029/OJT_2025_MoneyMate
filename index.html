@@ -20,5 +20,106 @@
         </div>
     </header>
 
+     <!-- Main Content -->
+    <main id="main-content" class="main-content">
+        <div class="container">
+            
+            <!-- Balance Summary -->
+            <section class="balance-section" aria-labelledby="balance-heading">
+                <h2 id="balance-heading" class="sr-only">Account Balance</h2>
+                <div class="balance-cards">
+                    <div class="balance-card balance-card--total">
+                        <span class="balance-label">Total Balance</span>
+                        <span class="balance-amount" id="total-balance">₹0.00</span>
+                    </div>
+                    <div class="balance-card balance-card--income">
+                        <span class="balance-label">Income</span>
+                        <span class="balance-amount" id="total-income">₹0.00</span>
+                    </div>
+                    <div class="balance-card balance-card--expense">
+                        <span class="balance-label">Expenses</span>
+                        <span class="balance-amount" id="total-expense">₹0.00</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Add Transaction Form -->
+            <section class="form-section" aria-labelledby="form-heading">
+                <h2 id="form-heading">Add Transaction</h2>
+                <form id="transaction-form" class="transaction-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="transaction-type">Type</label>
+                            <select id="transaction-type" name="type" required>
+                                <option value="income">Income</option>
+                                <option value="expense">Expense</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="transaction-amount">Amount (₹)</label>
+                            <input 
+                                type="number" 
+                                id="transaction-amount" 
+                                name="amount" 
+                                placeholder="0.00" 
+                                step="0.01" 
+                                min="0.01"
+                                required
+                                aria-describedby="amount-help"
+                            >
+                            <small id="amount-help" class="form-help">Enter amount in rupees</small>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="transaction-category">Category</label>
+                            <select id="transaction-category" name="category" required>
+                                <!-- Options will be populated dynamically based on type -->
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="transaction-date">Date</label>
+                            <input 
+                                type="date" 
+                                id="transaction-date" 
+                                name="date" 
+                                required
+                                max=""
+                            >
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="transaction-description">Description</label>
+                        <input 
+                            type="text" 
+                            id="transaction-description" 
+                            name="description" 
+                            placeholder="e.g., Lunch at cafe"
+                            maxlength="100"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="transaction-recurring" name="recurring">
+                            <span>Recurring monthly transaction</span>
+                        </label>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Add Transaction</button>
+                        <button type="button" id="undo-btn" class="btn btn-secondary" disabled>
+                            ↶ Undo
+                        </button>
+                        <button type="button" id="redo-btn" class="btn btn-secondary" disabled>
+                            ↷ Redo
+                        </button>
+                    </div>
+                </form>
+            </section>
 </body>
 </html>

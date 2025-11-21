@@ -347,3 +347,119 @@ section h2 {
     max-width: 100%;
     height: auto;
 }
+/* Transactions */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.section-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.filters {
+    display: grid;
+    grid-template-columns: 2fr repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.search-input,
+.filter-select {
+    padding: 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 1rem;
+}
+
+.transactions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.transaction-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    transition: var(--transition);
+}
+
+.transaction-item:hover {
+    box-shadow: 0 2px 8px var(--shadow);
+}
+
+.transaction-info {
+    flex: 1;
+}
+
+.transaction-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.25rem;
+}
+
+.transaction-category {
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.transaction-badge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+}
+
+.transaction-description {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.transaction-date {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.transaction-amount {
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.transaction-amount--income {
+    color: var(--success);
+}
+
+.transaction-amount--expense {
+    color: var(--danger);
+}
+
+.transaction-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn-delete {
+    background: transparent;
+    border: none;
+    color: var(--danger);
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: var(--radius);
+    transition: var(--transition);
+}
+
+.btn-delete:hover {
+    background: #fee2e2;
+}

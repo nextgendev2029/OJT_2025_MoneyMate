@@ -121,5 +121,65 @@
                     </div>
                 </form>
             </section>
+            <!-- Budget Section -->
+            <section class="budget-section" aria-labelledby="budget-heading">
+                <h2 id="budget-heading">Monthly Budgets</h2>
+                <div id="budget-alerts" class="budget-alerts" role="alert" aria-live="polite"></div>
+                <div id="budget-list" class="budget-list"></div>
+                <button id="add-budget-btn" class="btn btn-outline">+ Add Budget</button>
+            </section>
+
+            <!-- Insights Section -->
+            <section class="insights-section" aria-labelledby="insights-heading">
+                <h2 id="insights-heading">Spending Insights</h2>
+                <div class="insights-grid">
+                    <div class="insight-card">
+                        <h3>Category Breakdown</h3>
+                        <canvas id="category-chart" aria-label="Pie chart showing expense distribution by category"></canvas>
+                    </div>
+                    <div class="insight-card">
+                        <h3>Spending Trend</h3>
+                        <canvas id="trend-chart" aria-label="Line chart showing spending over time"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Transactions List -->
+            <section class="transactions-section" aria-labelledby="transactions-heading">
+                <div class="section-header">
+                    <h2 id="transactions-heading">Transaction History</h2>
+                    <div class="section-actions">
+                        <button id="export-json-btn" class="btn btn-sm">Export JSON</button>
+                        <button id="export-csv-btn" class="btn btn-sm">Export CSV</button>
+                    </div>
+                </div>
+
+                <!-- Search and Filter -->
+                <div class="filters">
+                    <input 
+                        type="search" 
+                        id="search-input" 
+                        class="search-input" 
+                        placeholder="Search transactions..."
+                        aria-label="Search transactions"
+                    >
+                    <select id="filter-type" class="filter-select" aria-label="Filter by type">
+                        <option value="all">All Types</option>
+                        <option value="income">Income</option>
+                        <option value="expense">Expense</option>
+                    </select>
+                    <select id="filter-category" class="filter-select" aria-label="Filter by category">
+                        <option value="all">All Categories</option>
+                    </select>
+                    <select id="sort-by" class="filter-select" aria-label="Sort by">
+                        <option value="date-desc">Date (Newest)</option>
+                        <option value="date-asc">Date (Oldest)</option>
+                        <option value="amount-desc">Amount (High to Low)</option>
+                        <option value="amount-asc">Amount (Low to High)</option>
+                    </select>
+                </div>
+
+                <div id="transactions-list" class="transactions-list" role="list"></div>
+                
 </body>
 </html>

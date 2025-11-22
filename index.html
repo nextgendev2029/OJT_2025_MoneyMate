@@ -193,6 +193,37 @@
             <p>&copy; 2025 Finance Tracker. Built with ❤️ using Vanilla JS</p>
         </div>
     </footer>
+    <!-- Budget Modal -->
+    <div id="budget-modal" class="modal" role="dialog" aria-labelledby="modal-title" aria-hidden="true">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Set Budget</h3>
+                <button class="modal-close" aria-label="Close modal">&times;</button>
+            </div>
+            <form id="budget-form" class="modal-body">
+                <div class="form-group">
+                    <label for="budget-category">Category</label>
+                    <select id="budget-category" required>
+                        <option value="food">Food & Dining</option>
+                        <option value="transport">Transport</option>
+                        <option value="shopping">Shopping</option>
+                        <option value="bills">Bills & Utilities</option>
+                        <option value="entertainment">Entertainment</option>
+                        <option value="education">Education</option>
+                        <option value="health">Health</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="budget-amount">Monthly Limit (₹)</label>
+                    <input type="number" id="budget-amount" step="0.01" min="1" required>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Save Budget</button>
+                    <button type="button" class="btn btn-secondary modal-cancel">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
                 
 </body>

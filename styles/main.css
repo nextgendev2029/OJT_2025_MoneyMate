@@ -548,3 +548,39 @@ section h2 {
     gap: 1rem;
     justify-content: flex-end;
 }
+
+/* Toast */
+.toast {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: var(--text-primary);
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: var(--radius);
+    box-shadow: 0 4px 12px var(--shadow);
+    transform: translateY(200%);
+    transition: transform 0.3s ease;
+    z-index: 1001;
+}
+
+.toast.show {
+    transform: translateY(0);
+}
+
+.toast--success {
+    background: var(--success);
+}
+
+.toast--error {
+    background: var(--danger);
+}
+
+/* Footer */
+.footer {
+    background: var(--bg-primary);
+    border-top: 1px solid var(--border);
+    padding: 1.5rem 0;
+    text-align: center;
+    color: var(--text-secondary);
+}

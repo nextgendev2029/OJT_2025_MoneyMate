@@ -41,23 +41,36 @@ class FinanceApp {
     }
 
     setupEventListeners() {
-        // Theme toggle
-        document.getElementById('theme-toggle').addEventListener('click', () => {
-            this.theme.toggle();
-        });
+    // Theme toggle
+    document.getElementById('theme-toggle').addEventListener('click', () => {
+        this.theme.toggle();
+    });
 
-        // Set default date to today and max date to today (no future dates)
-        const dateInput = document.getElementById('transaction-date');
-        const today = new Date().toISOString().split('T')[0];
-        dateInput.value = today;
-        dateInput.max = today;
+    // Transaction form
+    const form = document.getElementById('transaction-form');
+    form.addEventListener('submit', (e) => this.handleTransactionSubmit(e));
 
-        // Initialize category options based on default type (income)
-        this.updateCategoryOptions('income');
-        
-        
-        
-    }
+    // Transaction type change - update categories dynamically
+    document.getElementById('transaction-type').addEventListener('change', (e) => {
+        this.updateCategoryOptions(e.target.value);
+    });
+
+    // Undo/Redo
+    document.getElementById('undo-btn').addEventListener('click', () => this.handleUndo());
+    document.getElementById('redo-btn').addEventListener('click', () => this.handleRedo());
+
+    // Set default date to today and max date to today (no future dates)
+    const dateInput = document.getElementById('transaction-date');
+    const today = new Date().toISOString().split('T')[0];
+    dateInput.value = today;
+    dateInput.max = today;
+
+    // Initialize category options based on default type (income)
+    this.updateCategoryOptions('income');
+    
+    
+}
+
 
     updateCategoryOptions(type) {
         const categorySelect = document.getElementById('transaction-category');
@@ -90,6 +103,45 @@ class FinanceApp {
             categorySelect.appendChild(option);
         });
     }
+
+    handleTransactionSubmit(e) {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    
+    const transaction = {
+        type: formData.get('type'),
+        amount: parseFloat(formData.get('amount')),
+        category: formData.get('category'),
+        date: formData.get('date'),
+        description: formData.get('description') || '',
+        recurring: formData.get('recurring') === 'on',
+        timestamp: Date.now()
+    };
+
+    this.transactions.add(transaction);
+    this.render();
+    e.target.reset();
+    
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('transaction-date').value = today;
+    this.updateCategoryOptions('income');
+    
+    this.ui.showToast('Transaction added successfully!', 'success');
+}
+
+handleUndo() {
+    if (this.transactions.undo()) {
+        this.render();
+        this.ui.showToast('Transaction undone', 'success');
+    }
+}
+
+handleRedo() {
+    if (this.transactions.redo()) {
+        this.render();
+        this.ui.showToast('Transaction redone', 'success');
+    }
+}
 
     checkRecurringTransactions() {
         const lastCheck = this.storage.get('lastRecurringCheck') || 0;

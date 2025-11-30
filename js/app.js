@@ -68,6 +68,79 @@ updateBalance() {
     document.getElementById('total-expense').textContent = `₹${stats.expense.toFixed(2)}`;
 }
 
+renderTransactions(transactions, page = 1, perPage = 10) {
+    const list = document.getElementById('transactions-list');
+    const totalPages = Math.ceil(transactions.length / perPage);
+    const start = (page - 1) * perPage;
+    const end = start + perPage;
+    const pageTransactions = transactions.slice(start, end);
+
+    if (pageTransactions.length === 0) {
+        list.innerHTML = '<p style="text-align: center; color: var(--text-secondary);">No transactions found</p>';
+        document.getElementById('pagination').innerHTML = '';
+        return;
+    }
+
+    list.innerHTML = pageTransactions.map(t => `
+        <div class="transaction-item" role="listitem">
+            <div class="transaction-info">
+                <div class="transaction-header">
+                    <span class="transaction-category">${t.category.replace('-', ' ')}</span>
+                    ${t.recurring ? '<span class="transaction-badge">🔄 Recurring</span>' : ''}
+                </div>
+                ${t.description ? `<div class="transaction-description">${t.description}</div>` : ''}
+                <div class="transaction-date">${new Date(t.date).toLocaleDateString('en-IN')}</div>
+            </div>
+            <div class="transaction-amount transaction-amount--${t.type}">
+                ${t.type === 'income' ? '+' : '-'}₹${t.amount.toFixed(2)}
+            </div>
+            <div class="transaction-actions">
+                <button class="btn-delete" onclick="app.deleteTransaction(${t.timestamp})" aria-label="Delete transaction">
+                    🗑️
+                </button>
+            </div>
+        </div>
+    `).join('');
+
+    this.renderPagination(page, totalPages, transactions);
+}
+
+renderPagination(currentPage, totalPages, transactions) {
+    const pagination = document.getElementById('pagination');
+    
+    if (totalPages <= 1) {
+        pagination.innerHTML = '';
+        return;
+    }
+
+    pagination.innerHTML = `
+        <button ${currentPage === 1 ? 'disabled' : ''} onclick="app.changePage(${currentPage - 1})">
+            Previous
+        </button>
+        <span class="page-info">Page ${currentPage} of ${totalPages}</span>
+        <button ${currentPage === totalPages ? 'disabled' : ''} onclick="app.changePage(${currentPage + 1})">
+            Next
+        </button>
+    `;
+    
+    this.currentPage = currentPage;
+    this.currentTransactions = transactions;
+}
+
+changePage(page) {
+    this.renderTransactions(this.currentTransactions, page);
+}
+
+deleteTransaction(timestamp) {
+    if (confirm('Are you sure you want to delete this transaction?')) {
+        this.transactions.delete(timestamp);
+        this.render();
+        this.ui.showToast('Transaction deleted', 'success');
+    }
+}
+
+
+
 updateUndoRedoButtons() {
     document.getElementById('undo-btn').disabled = !this.transactions.canUndo();
     document.getElementById('redo-btn').disabled = !this.transactions.canRedo();

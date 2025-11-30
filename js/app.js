@@ -141,6 +141,71 @@ deleteTransaction(timestamp) {
 
 
 
+renderBudgets() {
+    const budgets = this.budgets.getAll();
+    const budgetList = document.getElementById('budget-list');
+    const budgetAlerts = document.getElementById('budget-alerts');
+    
+    if (Object.keys(budgets).length === 0) {
+        budgetList.innerHTML = '<p style="color: var(--text-secondary);">No budgets set. Click "Add Budget" to get started.</p>';
+        budgetAlerts.innerHTML = '';
+        return;
+    }
+
+    const spending = this.transactions.getSpendingByCategory();
+    let alerts = [];
+
+    budgetList.innerHTML = Object.entries(budgets).map(([category, limit]) => {
+        const spent = spending[category] || 0;
+        const percentage = (spent / limit) * 100;
+        const remaining = limit - spent;
+        
+        let progressClass = '';
+        if (percentage >= 100) {
+            progressClass = 'budget-progress-bar--danger';
+            alerts.push({ category, type: 'danger', message: `Budget exceeded for ${category}!` });
+        } else if (percentage >= 80) {
+            progressClass = 'budget-progress-bar--warning';
+            alerts.push({ category, type: 'warning', message: `${category} budget is ${percentage.toFixed(0)}% used` });
+        }
+
+        return `
+            <div class="budget-item">
+                <div class="budget-header">
+                    <span class="budget-category">${category.replace('-', ' ')}</span>
+                    <span class="budget-amount">₹${spent.toFixed(2)} / ₹${limit.toFixed(2)}</span>
+                </div>
+                <div class="budget-progress">
+                    <div class="budget-progress-bar ${progressClass}" style="width: ${Math.min(percentage, 100)}%"></div>
+                </div>
+                <small style="color: var(--text-secondary);">
+                    ${remaining > 0 ? `₹${remaining.toFixed(2)} remaining` : `₹${Math.abs(remaining).toFixed(2)} over budget`}
+                </small>
+            </div>
+        `;
+    }).join('');
+
+    budgetAlerts.innerHTML = alerts.map(alert => `
+        <div class="budget-alert budget-alert--${alert.type}">
+            ${alert.type === 'danger' ? '⚠️' : '⚡'} ${alert.message}
+        </div>
+    `).join('');
+}
+
+updateCharts() {
+    const transactions = this.transactions.getAll();
+    const expenses = transactions.filter(t => t.type === 'expense');
+    
+    // Category breakdown
+    const categoryData = this.transactions.getSpendingByCategory();
+    this.charts.renderPieChart('category-chart', categoryData);
+    
+    // Spending trend
+    const trendData = this.transactions.getSpendingTrend();
+    this.charts.renderLineChart('trend-chart', trendData);
+}
+
+
 updateUndoRedoButtons() {
     document.getElementById('undo-btn').disabled = !this.transactions.canUndo();
     document.getElementById('redo-btn').disabled = !this.transactions.canRedo();

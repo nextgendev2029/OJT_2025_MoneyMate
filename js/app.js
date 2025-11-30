@@ -50,7 +50,7 @@ class FinanceApp {
     const form = document.getElementById('transaction-form');
     form.addEventListener('submit', (e) => this.handleTransactionSubmit(e));
 
-    // Transaction type change - update categories dynamically
+    // Transaction type change
     document.getElementById('transaction-type').addEventListener('change', (e) => {
         this.updateCategoryOptions(e.target.value);
     });
@@ -59,16 +59,31 @@ class FinanceApp {
     document.getElementById('undo-btn').addEventListener('click', () => this.handleUndo());
     document.getElementById('redo-btn').addEventListener('click', () => this.handleRedo());
 
-    // Set default date to today and max date to today (no future dates)
+    // Search and filters
+    const searchInput = document.getElementById('search-input');
+    searchInput.addEventListener('input', this.debounce(() => this.render(), 300));
+    
+    document.getElementById('filter-type').addEventListener('change', () => this.render());
+    document.getElementById('filter-category').addEventListener('change', () => this.render());
+    document.getElementById('sort-by').addEventListener('change', () => this.render());
+
+    // Budget
+    document.getElementById('add-budget-btn').addEventListener('click', () => this.ui.openBudgetModal());
+    document.getElementById('budget-form').addEventListener('submit', (e) => this.handleBudgetSubmit(e));
+
+    // Modal close
+    document.querySelectorAll('.modal-close, .modal-cancel').forEach(btn => {
+        btn.addEventListener('click', () => this.ui.closeModal());
+    });
+
+    // Set default date
     const dateInput = document.getElementById('transaction-date');
     const today = new Date().toISOString().split('T')[0];
     dateInput.value = today;
     dateInput.max = today;
 
-    // Initialize category options based on default type (income)
+    // Initialize categories
     this.updateCategoryOptions('income');
-    
-    
 }
 
 
@@ -129,6 +144,21 @@ class FinanceApp {
     this.ui.showToast('Transaction added successfully!', 'success');
 }
 
+handleBudgetSubmit(e) {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    
+    const budget = {
+        category: formData.get('category') || document.getElementById('budget-category').value,
+        limit: parseFloat(document.getElementById('budget-amount').value)
+    };
+
+    this.budgets.set(budget.category, budget.limit);
+    this.render();
+    this.ui.closeModal();
+    this.ui.showToast('Budget set successfully!', 'success');
+}
+
 handleUndo() {
     if (this.transactions.undo()) {
         this.render();
@@ -159,6 +189,19 @@ handleRedo() {
         // Placeholder - will be implemented later
         console.log('Render called');
     }
+
+    debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
 }
 
 // Initialize app

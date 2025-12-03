@@ -15,6 +15,10 @@ class FinanceApp {
     this.theme = new ThemeManager();
     this.charts = new ChartManager();
 
+    // Edit mode state
+    this.editMode = false;
+    this.editingTimestamp = null;
+
     this.init();
   }
 
@@ -64,6 +68,11 @@ class FinanceApp {
     document
       .getElementById("redo-btn")
       .addEventListener("click", () => this.handleRedo());
+
+    // Cancel edit button
+    document
+      .getElementById("cancel-edit-btn")
+      .addEventListener("click", () => this.cancelEdit());
 
     // Search and filters
     const searchInput = document.getElementById("search-input");
@@ -148,29 +157,51 @@ class FinanceApp {
       date: formData.get("date"),
       description: formData.get("description") || "",
       recurring: formData.get("recurring") === "on",
-      timestamp: Date.now(),
+      timestamp: this.editMode ? this.editingTimestamp : Date.now(),
     };
 
     // Validate expense against current balance
-        if (transaction.type === 'expense') {
-            const currentStats = this.transactions.getStats();
-            const currentBalance = currentStats.balance;
-            
-            if (transaction.amount > currentBalance) {
-                this.ui.showToast(`Insufficient balance! Available: ₹${currentBalance.toFixed(2)}`, 'error');
-                return;
-            }
+    if (transaction.type === "expense") {
+      const currentStats = this.transactions.getStats();
+      const currentBalance = currentStats.balance;
+
+      // If editing, add back the old transaction amount to balance
+      let availableBalance = currentBalance;
+      if (this.editMode) {
+        const oldTransaction = this.transactions
+          .getAll()
+          .find((t) => t.timestamp === this.editingTimestamp);
+        if (oldTransaction && oldTransaction.type === "expense") {
+          availableBalance += oldTransaction.amount;
         }
-        
-    this.transactions.add(transaction);
+      }
+
+      if (transaction.amount > availableBalance) {
+        this.ui.showToast(
+          `Insufficient balance! Available: ₹${availableBalance.toFixed(2)}`,
+          "error"
+        );
+        return;
+      }
+    }
+
+    if (this.editMode) {
+      // Update existing transaction
+      this.transactions.delete(this.editingTimestamp);
+      this.transactions.add(transaction);
+      this.ui.showToast("Transaction updated successfully!", "success");
+      this.cancelEdit();
+    } else {
+      // Add new transaction
+      this.transactions.add(transaction);
+      this.ui.showToast("Transaction added successfully!", "success");
+    }
     this.render();
     e.target.reset();
 
     const today = new Date().toISOString().split("T")[0];
     document.getElementById("transaction-date").value = today;
     this.updateCategoryOptions("income");
-
-    this.ui.showToast("Transaction added successfully!", "success");
   }
 
   handleBudgetSubmit(e) {
@@ -261,7 +292,7 @@ class FinanceApp {
     this.updateUndoRedoButtons();
 
     // Update category filter dropdown
-        this.updateCategoryFilter();
+    this.updateCategoryFilter();
   }
 
   sortTransactions(transactions, sortBy) {
@@ -337,6 +368,11 @@ class FinanceApp {
                 ${t.type === "income" ? "+" : "-"}₹${t.amount.toFixed(2)}
             </div>
             <div class="transaction-actions">
+            <button class="btn-edit" onclick="app.editTransaction(${
+              t.timestamp
+            })" aria-label="Edit transaction">
+                        ✏️
+                    </button>
                 <button class="btn-delete" onclick="app.deleteTransaction(${
                   t.timestamp
                 })" aria-label="Delete transaction">
@@ -486,31 +522,33 @@ class FinanceApp {
   }
 
   updateCategoryFilter() {
-    const filterCategory = document.getElementById('filter-category');
+    const filterCategory = document.getElementById("filter-category");
     const allTransactions = this.transactions.getAll();
-    
+
     // Get unique categories from all transactions
-    const categories = [...new Set(allTransactions.map(t => t.category))];
-    
+    const categories = [...new Set(allTransactions.map((t) => t.category))];
+
     // Save current selection
     const currentValue = filterCategory.value;
-    
+
     // Clear existing options except "All Categories"
     filterCategory.innerHTML = '<option value="all">All Categories</option>';
-    
+
     // Add unique categories
-    categories.forEach(category => {
-        const option = document.createElement('option');
-        option.value = category;
-        option.textContent = category.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase());
-        filterCategory.appendChild(option);
+    categories.forEach((category) => {
+      const option = document.createElement("option");
+      option.value = category;
+      option.textContent = category
+        .replace("-", " ")
+        .replace(/\b\w/g, (l) => l.toUpperCase());
+      filterCategory.appendChild(option);
     });
-    
+
     // Restore previous selection if it still exists
     if (categories.includes(currentValue)) {
-        filterCategory.value = currentValue;
+      filterCategory.value = currentValue;
     }
-}
+  }
 
   debounce(func, wait) {
     let timeout;
@@ -522,6 +560,66 @@ class FinanceApp {
       clearTimeout(timeout);
       timeout = setTimeout(later, wait);
     };
+  }
+
+  // Edit Transaction Methods
+  editTransaction(timestamp) {
+    const transaction = this.transactions
+      .getAll()
+      .find((t) => t.timestamp === timestamp);
+    if (!transaction) {
+      this.ui.showToast("Transaction not found", "error");
+      return;
+    }
+
+    // Enter edit mode
+    this.editMode = true;
+    this.editingTimestamp = timestamp;
+
+    // Populate form with transaction data
+    document.getElementById("transaction-type").value = transaction.type;
+    this.updateCategoryOptions(transaction.type);
+    document.getElementById("transaction-amount").value = transaction.amount;
+    document.getElementById("transaction-category").value =
+      transaction.category;
+    document.getElementById("transaction-date").value = transaction.date;
+    document.getElementById("transaction-description").value =
+      transaction.description || "";
+    document.getElementById("transaction-recurring").checked =
+      transaction.recurring || false;
+
+    // Update UI for edit mode
+    const submitBtn = document.getElementById("transaction-submit-btn");
+    const cancelBtn = document.getElementById("cancel-edit-btn");
+    submitBtn.textContent = "Update Transaction";
+    cancelBtn.style.display = "inline-block";
+
+    // Scroll to form
+    document
+      .getElementById("transaction-form")
+      .scrollIntoView({ behavior: "smooth", block: "start" });
+
+    this.ui.showToast("Edit mode activated", "info");
+  }
+
+  cancelEdit() {
+    // Exit edit mode
+    this.editMode = false;
+    this.editingTimestamp = null;
+
+    // Reset form
+    document.getElementById("transaction-form").reset();
+
+    // Reset date to today
+    const today = new Date().toISOString().split("T")[0];
+    document.getElementById("transaction-date").value = today;
+    this.updateCategoryOptions("income");
+
+    // Update UI
+    const submitBtn = document.getElementById("transaction-submit-btn");
+    const cancelBtn = document.getElementById("cancel-edit-btn");
+    submitBtn.textContent = "Add Transaction";
+    cancelBtn.style.display = "none";
   }
 }
 

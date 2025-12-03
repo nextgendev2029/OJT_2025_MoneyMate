@@ -151,6 +151,17 @@ class FinanceApp {
       timestamp: Date.now(),
     };
 
+    // Validate expense against current balance
+        if (transaction.type === 'expense') {
+            const currentStats = this.transactions.getStats();
+            const currentBalance = currentStats.balance;
+            
+            if (transaction.amount > currentBalance) {
+                this.ui.showToast(`Insufficient balance! Available: ₹${currentBalance.toFixed(2)}`, 'error');
+                return;
+            }
+        }
+        
     this.transactions.add(transaction);
     this.render();
     e.target.reset();

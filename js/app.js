@@ -248,6 +248,9 @@ class FinanceApp {
 
     // Update undo/redo buttons
     this.updateUndoRedoButtons();
+
+    // Update category filter dropdown
+        this.updateCategoryFilter();
   }
 
   sortTransactions(transactions, sortBy) {
@@ -470,6 +473,33 @@ class FinanceApp {
     document.getElementById("undo-btn").disabled = !this.transactions.canUndo();
     document.getElementById("redo-btn").disabled = !this.transactions.canRedo();
   }
+
+  updateCategoryFilter() {
+    const filterCategory = document.getElementById('filter-category');
+    const allTransactions = this.transactions.getAll();
+    
+    // Get unique categories from all transactions
+    const categories = [...new Set(allTransactions.map(t => t.category))];
+    
+    // Save current selection
+    const currentValue = filterCategory.value;
+    
+    // Clear existing options except "All Categories"
+    filterCategory.innerHTML = '<option value="all">All Categories</option>';
+    
+    // Add unique categories
+    categories.forEach(category => {
+        const option = document.createElement('option');
+        option.value = category;
+        option.textContent = category.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase());
+        filterCategory.appendChild(option);
+    });
+    
+    // Restore previous selection if it still exists
+    if (categories.includes(currentValue)) {
+        filterCategory.value = currentValue;
+    }
+}
 
   debounce(func, wait) {
     let timeout;

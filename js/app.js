@@ -210,3 +210,15 @@ updateUndoRedoButtons() {
     document.getElementById('undo-btn').disabled = !this.transactions.canUndo();
     document.getElementById('redo-btn').disabled = !this.transactions.canRedo();
 }
+
+
+// Validate expense against current balance
+        if (transaction.type === 'expense') {
+            const currentStats = this.transactions.getStats();
+            const currentBalance = currentStats.balance;
+            
+            if (transaction.amount > currentBalance) {
+                this.ui.showToast(`Insufficient balance! Available: ₹${currentBalance.toFixed(2)}`, 'error');
+                return;
+            }
+        }

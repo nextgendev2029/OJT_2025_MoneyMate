@@ -479,6 +479,21 @@ section h2 {
     gap: 0.5rem;
 }
 
+.btn-edit {
+    background: transparent;
+    border: none;
+    color: var(--primary);
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: var(--radius);
+    transition: var(--transition);
+    font-size: 1.1rem;
+}
+
+.btn-edit:hover {
+    background: #e0e7ff;
+}
+
 .btn-delete {
     background: transparent;
     border: none;

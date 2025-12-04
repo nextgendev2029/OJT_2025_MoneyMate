@@ -507,6 +507,37 @@ section h2 {
 .btn-delete:hover {
     background: #fee2e2;
 }
+
+/* Bulk Delete Styles */
+.transaction-checkbox {
+    margin-right: 0.75rem;
+    transform: scale(1.2);
+    cursor: pointer;
+}
+
+.transaction-item.select-mode {
+    border-left: 4px solid var(--primary);
+    background: var(--bg-secondary);
+}
+
+.transaction-item.selected {
+    background: rgba(99, 102, 241, 0.1);
+    border-color: var(--primary);
+}
+
+.btn-danger {
+    background: var(--danger);
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #dc2626;
+}
+
+.select-mode-active .transaction-item {
+    padding-left: 1rem;
+}
+
 /* Pagination */
 .pagination {
     display: flex;

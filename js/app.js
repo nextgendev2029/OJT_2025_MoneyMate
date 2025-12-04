@@ -19,6 +19,10 @@ class FinanceApp {
     this.editMode = false;
     this.editingTimestamp = null;
 
+    // Bulk delete state
+    this.selectMode = false;
+    this.selectedTransactions = new Set();
+
     this.init();
   }
 
@@ -73,6 +77,11 @@ class FinanceApp {
     document
       .getElementById("cancel-edit-btn")
       .addEventListener("click", () => this.cancelEdit());
+    
+    // Bulk delete buttons
+    document.getElementById('select-mode-btn').addEventListener('click', () => this.toggleSelectMode());
+    document.getElementById('delete-selected-btn').addEventListener('click', () => this.deleteSelected());
+    document.getElementById('delete-all-btn').addEventListener('click', () => this.deleteAll());
 
     // Search and filters
     const searchInput = document.getElementById("search-input");
@@ -342,7 +351,14 @@ class FinanceApp {
     list.innerHTML = pageTransactions
       .map(
         (t) => `
-        <div class="transaction-item" role="listitem">
+        <div class="transaction-item ${this.selectMode ? 'select-mode' : ''} ${this.selectedTransactions.has(t.timestamp) ? 'selected' : ''}" role="listitem">
+                ${this.selectMode ? `
+                    <input type="checkbox" 
+                           class="transaction-checkbox" 
+                           data-timestamp="${t.timestamp}"
+                           onchange="app.toggleTransactionSelection(${t.timestamp})"
+                           ${this.selectedTransactions.has(t.timestamp) ? 'checked' : ''}>
+                ` : ''}
             <div class="transaction-info">
                 <div class="transaction-header">
                     <span class="transaction-category">${t.category.replace(
@@ -368,6 +384,7 @@ class FinanceApp {
                 ${t.type === "income" ? "+" : "-"}₹${t.amount.toFixed(2)}
             </div>
             <div class="transaction-actions">
+            ${!this.selectMode ? `
             <button class="btn-edit" onclick="app.editTransaction(${
               t.timestamp
             })" aria-label="Edit transaction">
@@ -378,6 +395,7 @@ class FinanceApp {
                 })" aria-label="Delete transaction">
                     🗑️
                 </button>
+                ` : ''}
             </div>
         </div>
     `
@@ -621,6 +639,110 @@ class FinanceApp {
     submitBtn.textContent = "Add Transaction";
     cancelBtn.style.display = "none";
   }
+  
+  // Bulk Delete Methods
+    toggleSelectMode() {
+        this.selectMode = !this.selectMode;
+        this.selectedTransactions.clear();
+        
+        const selectBtn = document.getElementById('select-mode-btn');
+        const deleteSelectedBtn = document.getElementById('delete-selected-btn');
+        const transactionsList = document.getElementById('transactions-list');
+        
+        if (this.selectMode) {
+            selectBtn.textContent = 'Cancel';
+            selectBtn.classList.add('btn-secondary');
+            deleteSelectedBtn.style.display = 'inline-block';
+            transactionsList.classList.add('select-mode-active');
+        } else {
+            selectBtn.textContent = 'Select';
+            selectBtn.classList.remove('btn-secondary');
+            deleteSelectedBtn.style.display = 'none';
+            transactionsList.classList.remove('select-mode-active');
+        }
+        
+        this.render();
+    }
+
+    toggleTransactionSelection(timestamp) {
+        if (this.selectedTransactions.has(timestamp)) {
+            this.selectedTransactions.delete(timestamp);
+        } else {
+            this.selectedTransactions.add(timestamp);
+        }
+        
+        // Update checkbox state
+        const checkbox = document.querySelector(`input[data-timestamp="${timestamp}"]`);
+        if (checkbox) {
+            checkbox.checked = this.selectedTransactions.has(timestamp);
+        }
+        
+        // Update transaction item appearance
+        const transactionItem = checkbox?.closest('.transaction-item');
+        if (transactionItem) {
+            if (this.selectedTransactions.has(timestamp)) {
+                transactionItem.classList.add('selected');
+            } else {
+                transactionItem.classList.remove('selected');
+            }
+        }
+        
+        // Update delete selected button text
+        const deleteSelectedBtn = document.getElementById('delete-selected-btn');
+        const count = this.selectedTransactions.size;
+        deleteSelectedBtn.textContent = count > 0 ? `Delete Selected (${count})` : 'Delete Selected';
+    }
+
+    deleteSelected() {
+        if (this.selectedTransactions.size === 0) {
+            this.ui.showToast('No transactions selected', 'error');
+            return;
+        }
+        
+        const count = this.selectedTransactions.size;
+        const message = `Are you sure you want to delete ${count} selected transaction${count > 1 ? 's' : ''}? This action cannot be undone.`;
+        
+        if (confirm(message)) {
+            this.selectedTransactions.forEach(timestamp => {
+                this.transactions.delete(timestamp);
+            });
+            
+            this.selectedTransactions.clear();
+            this.selectMode = false;
+            this.toggleSelectMode(); // Reset select mode
+            this.render();
+            
+            this.ui.showToast(`${count} transaction${count > 1 ? 's' : ''} deleted successfully`, 'success');
+        }
+    }
+
+    deleteAll() {
+        const allTransactions = this.transactions.getAll();
+        
+        if (allTransactions.length === 0) {
+            this.ui.showToast('No transactions to delete', 'error');
+            return;
+        }
+        
+        const count = allTransactions.length;
+        const message = `Are you sure you want to delete ALL ${count} transactions? This action cannot be undone.`;
+        
+        if (confirm(message)) {
+            // Delete all transactions
+            allTransactions.forEach(transaction => {
+                this.transactions.delete(transaction.timestamp);
+            });
+            
+            // Reset select mode if active
+            if (this.selectMode) {
+                this.selectMode = false;
+                this.toggleSelectMode();
+            }
+            
+            this.render();
+            this.ui.showToast(`All ${count} transactions deleted successfully`, 'success');
+        }
+    }
 }
 
 // Initialize app

@@ -1,18 +1,16 @@
 // Chart Manager - Handles chart rendering using Canvas API
 export class ChartManager {
     constructor() {
-        // Distinct, vibrant colors for better visibility
+        // Soft pastel colors - gentle and easy on the eyes
         this.colors = [
-            '#ef4444', // Red
-            '#f59e0b', // Orange
-            '#10b981', // Green
-            '#06b6d4', // Cyan
-            '#3b82f6', // Blue
-            '#8b5cf6', // Purple
-            '#ec4899', // Pink
-            '#14b8a6', // Teal
-            '#f97316', // Deep Orange
-            '#84cc16'  // Lime
+            '#FFB6C1', // Pastel Pink
+            '#89CFF0', // Baby Blue
+            '#98FF98', // Mint Green
+            '#FFB347', // Pastel Orange
+            '#E6E6FA', // Lavender
+            '#FFDAB9', // Light Peach
+            '#D3D3D3', // Soft Gray 
+            '#93E9BE'  // Seafoam Green 
         ];
         
         // Store chart data for interactivity

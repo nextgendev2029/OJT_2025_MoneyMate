@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Money Mate</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/theme.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <h1 class="logo">💰 Money Mate</h1>
+            <nav class="nav" role="navigation">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="about.html" class="nav-link">About Us</a>
+                <a href="contact.html" class="nav-link">Contact Us</a>
+                <button id="theme-toggle" class="btn-icon" aria-label="Toggle dark mode">
+                    🌙
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <section>
+                <h2>About Money Mate</h2>
+                <p style="font-size: 1.1rem; line-height: 1.8; color: var(--text-secondary); margin-bottom: 1.5rem;">
+                    Money Mate is your personal finance companion designed to help you take control of your financial life. 
+                    We believe that managing money should be simple, intuitive, and accessible to everyone.
+                </p>
+
+                <h3 style="font-size: 1.25rem; margin-top: 2rem; margin-bottom: 1rem; color: var(--text-primary);">Our Mission</h3>
+                <p style="font-size: 1.1rem; line-height: 1.8; color: var(--text-secondary); margin-bottom: 1.5rem;">
+                    To empower individuals with the tools and insights they need to make informed financial decisions, 
+                    track their spending, and achieve their financial goals.
+                </p>
+
+                <h3 style="font-size: 1.25rem; margin-top: 2rem; margin-bottom: 1rem; color: var(--text-primary);">Key Features</h3>
+                <ul style="font-size: 1.1rem; line-height: 2; color: var(--text-secondary); margin-left: 2rem;">
+                    <li>📊 Track income and expenses effortlessly</li>
+                    <li>💰 Set and monitor monthly budgets</li>
+                    <li>📈 Visualize spending patterns with interactive charts</li>
+                    <li>🔄 Manage recurring transactions</li>
+                    <li>📱 Responsive design for all devices</li>
+                    <li>🌙 Dark mode for comfortable viewing</li>
+                    <li>💾 Export data in JSON and CSV formats</li>
+                </ul>
+
+                <h3 style="font-size: 1.25rem; margin-top: 2rem; margin-bottom: 1rem; color: var(--text-primary);">Why Choose Money Mate?</h3>
+                <p style="font-size: 1.1rem; line-height: 1.8; color: var(--text-secondary); margin-bottom: 1.5rem;">
+                    Unlike complex financial software, Money Mate focuses on simplicity and ease of use. 
+                    Our clean interface and powerful features make it perfect for students, professionals, 
+                    and anyone looking to better manage their finances.
+                </p>
+
+                <div style="margin-top: 2rem; padding: 1.5rem; background: rgba(16, 185, 129, 0.1); border-radius: 12px; border-left: 4px solid #10b981;">
+                    <p style="font-size: 1.1rem; line-height: 1.8; color: var(--text-primary); margin: 0;">
+                        <strong>💡 Pro Tip:</strong> Start by tracking your expenses for a month to understand your spending patterns, 
+                        then set realistic budgets based on your insights.
+                    </p>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Money Mate. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script type="module" src="js/modules/theme.js"></script>
+    <script>
+        // Initialize theme toggle
+        import('./js/modules/theme.js').then(module => {
+            const theme = new module.ThemeManager();
+            theme.init();
+        });
+    </script>
+</body>
+</html>

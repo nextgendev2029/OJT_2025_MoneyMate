@@ -904,6 +904,16 @@ section h2 {
     justify-content: flex-end;
 }
 
+/* Budget Options Modal */
+#budget-options-modal {
+    z-index: 1100;
+}
+
+/* Confirmation Modal - Highest z-index (appears on top of everything) */
+#confirm-modal {
+    z-index: 1200;
+}
+
 /* Toast */
 .toast {
     position: fixed;

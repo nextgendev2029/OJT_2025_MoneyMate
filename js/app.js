@@ -494,7 +494,7 @@ class FinanceApp {
         }
 
         return `
-            <div class="budget-item">
+            <div class="budget-item" onclick="app.openBudgetOptions('${category}', ${limit})" style="cursor: pointer;">
                 <div class="budget-header">
                     <span class="budget-category">${category.replace(
                       "-",
@@ -774,6 +774,80 @@ class FinanceApp {
             this.confirmCallback = null;
         }
         this.closeConfirmModal();
+    }
+
+    // Budget Edit/Delete Methods
+    openBudgetOptions(category, currentLimit) {
+        // Create modal HTML
+        const modalHTML = `
+            <div class="modal active" id="budget-options-modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Manage Budget: ${category.replace('-', ' ')}</h3>
+                        <button class="modal-close" onclick="app.closeBudgetOptions()">×</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="edit-budget-amount">Budget Limit (₹)</label>
+                            <input 
+                                type="number" 
+                                id="edit-budget-amount" 
+                                value="${currentLimit}" 
+                                min="0.01" 
+                                step="0.01"
+                                required
+                            >
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" onclick="app.updateBudget('${category}')">Update Budget</button>
+                        <button class="btn btn-danger" onclick="app.deleteBudget('${category}')">Delete Budget</button>
+                        <button class="btn btn-secondary modal-cancel" onclick="app.closeBudgetOptions()">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Remove existing modal if any
+        const existingModal = document.getElementById('budget-options-modal');
+        if (existingModal) {
+            existingModal.remove();
+        }
+        
+        // Add modal to body
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+    }
+
+    closeBudgetOptions() {
+        const modal = document.getElementById('budget-options-modal');
+        if (modal) {
+            modal.remove();
+        }
+    }
+
+    updateBudget(category) {
+        const newLimit = parseFloat(document.getElementById('edit-budget-amount').value);
+        
+        if (!newLimit || newLimit <= 0) {
+            this.ui.showToast('Please enter a valid budget amount', 'error');
+            return;
+        }
+        
+        this.budgets.set(category, newLimit);
+        this.closeBudgetOptions();
+        this.render();
+        this.ui.showToast('Budget updated successfully!', 'success');
+    }
+
+    deleteBudget(category) {
+        const message = `Are you sure you want to delete the budget for ${category.replace('-', ' ')}?`;
+        
+        this.showConfirmModal(message, () => {
+            this.budgets.delete(category);
+            this.closeBudgetOptions();
+            this.render();
+            this.ui.showToast('Budget deleted successfully!', 'success');
+        });
     }
 }
 

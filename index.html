@@ -230,6 +230,23 @@
         </div>
     </div>
 
+    <!-- Confirmation Modal -->
+    <div id="confirm-modal" class="modal" role="dialog" aria-labelledby="confirm-title" aria-hidden="true">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="confirm-title">Confirm Delete</h3>
+                <button class="modal-close confirm-cancel" aria-label="Close modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="confirm-message" style="margin-bottom: 1.5rem; line-height: 1.6;"></p>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" id="confirm-yes">Delete</button>
+                    <button type="button" class="btn btn-secondary confirm-cancel">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
         <!-- Toast Notification -->
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
 

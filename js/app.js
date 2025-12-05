@@ -23,6 +23,9 @@ class FinanceApp {
     this.selectMode = false;
     this.selectedTransactions = new Set();
 
+    // Confirmation modal state
+    this.confirmCallback = null;
+
     this.init();
   }
 
@@ -107,6 +110,12 @@ class FinanceApp {
     document
       .getElementById("budget-form")
       .addEventListener("submit", (e) => this.handleBudgetSubmit(e));
+
+    // Confirmation modal
+        document.getElementById('confirm-yes').addEventListener('click', () => this.handleConfirmYes());
+        document.querySelectorAll('.confirm-cancel').forEach(btn => {
+            btn.addEventListener('click', () => this.closeConfirmModal());
+        });
 
     // Modal close
     document.querySelectorAll(".modal-close, .modal-cancel").forEach((btn) => {
@@ -436,12 +445,15 @@ class FinanceApp {
   }
 
   deleteTransaction(timestamp) {
-    if (confirm("Are you sure you want to delete this transaction?")) {
-      this.transactions.delete(timestamp);
-      this.render();
-      this.ui.showToast("Transaction deleted", "success");
+        this.showConfirmModal(
+            'Are you sure you want to delete this transaction?',
+            () => {
+                this.transactions.delete(timestamp);
+                this.render();
+                this.ui.showToast('Transaction deleted', 'success');
+            }
+        );
     }
-  }
 
   renderBudgets() {
     const budgets = this.budgets.getAll();
@@ -702,7 +714,7 @@ class FinanceApp {
         const count = this.selectedTransactions.size;
         const message = `Are you sure you want to delete ${count} selected transaction${count > 1 ? 's' : ''}? This action cannot be undone.`;
         
-        if (confirm(message)) {
+        this.showConfirmModal(message, () => {
             this.selectedTransactions.forEach(timestamp => {
                 this.transactions.delete(timestamp);
             });
@@ -713,7 +725,7 @@ class FinanceApp {
             this.render();
             
             this.ui.showToast(`${count} transaction${count > 1 ? 's' : ''} deleted successfully`, 'success');
-        }
+        });
     }
 
     deleteAll() {
@@ -727,7 +739,7 @@ class FinanceApp {
         const count = allTransactions.length;
         const message = `Are you sure you want to delete ALL ${count} transactions? This action cannot be undone.`;
         
-        if (confirm(message)) {
+        this.showConfirmModal(message, () => {
             // Delete all transactions
             allTransactions.forEach(transaction => {
                 this.transactions.delete(transaction.timestamp);
@@ -741,7 +753,27 @@ class FinanceApp {
             
             this.render();
             this.ui.showToast(`All ${count} transactions deleted successfully`, 'success');
+         });
+    }
+
+    // Confirmation Modal Methods
+    showConfirmModal(message, callback) {
+        this.confirmCallback = callback;
+        document.getElementById('confirm-message').textContent = message;
+        document.getElementById('confirm-modal').classList.add('active');
+    }
+
+    closeConfirmModal() {
+        this.confirmCallback = null;
+        document.getElementById('confirm-modal').classList.remove('active');
+    }
+
+    handleConfirmYes() {
+        if (this.confirmCallback) {
+            this.confirmCallback();
+            this.confirmCallback = null;
         }
+        this.closeConfirmModal();
     }
 }
 

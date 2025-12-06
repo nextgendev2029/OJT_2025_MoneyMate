@@ -40,7 +40,10 @@ class FinanceApp {
     this.setupEventListeners();
 
     // Setup hamburger menu
-        this.setupHamburgerMenu();
+    this.setupHamburgerMenu();
+
+    // Setup custom step for amount inputs
+    this.setupCustomStep();
 
     // Initial render
     this.render();
@@ -83,11 +86,17 @@ class FinanceApp {
     document
       .getElementById("cancel-edit-btn")
       .addEventListener("click", () => this.cancelEdit());
-    
+
     // Bulk delete buttons
-    document.getElementById('select-mode-btn').addEventListener('click', () => this.toggleSelectMode());
-    document.getElementById('delete-selected-btn').addEventListener('click', () => this.deleteSelected());
-    document.getElementById('delete-all-btn').addEventListener('click', () => this.deleteAll());
+    document
+      .getElementById("select-mode-btn")
+      .addEventListener("click", () => this.toggleSelectMode());
+    document
+      .getElementById("delete-selected-btn")
+      .addEventListener("click", () => this.deleteSelected());
+    document
+      .getElementById("delete-all-btn")
+      .addEventListener("click", () => this.deleteAll());
 
     // Search and filters
     const searchInput = document.getElementById("search-input");
@@ -115,10 +124,12 @@ class FinanceApp {
       .addEventListener("submit", (e) => this.handleBudgetSubmit(e));
 
     // Confirmation modal
-        document.getElementById('confirm-yes').addEventListener('click', () => this.handleConfirmYes());
-        document.querySelectorAll('.confirm-cancel').forEach(btn => {
-            btn.addEventListener('click', () => this.closeConfirmModal());
-        });
+    document
+      .getElementById("confirm-yes")
+      .addEventListener("click", () => this.handleConfirmYes());
+    document.querySelectorAll(".confirm-cancel").forEach((btn) => {
+      btn.addEventListener("click", () => this.closeConfirmModal());
+    });
 
     // Modal close
     document.querySelectorAll(".modal-close, .modal-cancel").forEach((btn) => {
@@ -363,14 +374,26 @@ class FinanceApp {
     list.innerHTML = pageTransactions
       .map(
         (t) => `
-        <div class="transaction-item ${this.selectMode ? 'select-mode' : ''} ${this.selectedTransactions.has(t.timestamp) ? 'selected' : ''}" role="listitem">
-                ${this.selectMode ? `
+        <div class="transaction-item ${this.selectMode ? "select-mode" : ""} ${
+          this.selectedTransactions.has(t.timestamp) ? "selected" : ""
+        }" role="listitem">
+                ${
+                  this.selectMode
+                    ? `
                     <input type="checkbox" 
                            class="transaction-checkbox" 
                            data-timestamp="${t.timestamp}"
-                           onchange="app.toggleTransactionSelection(${t.timestamp})"
-                           ${this.selectedTransactions.has(t.timestamp) ? 'checked' : ''}>
-                ` : ''}
+                           onchange="app.toggleTransactionSelection(${
+                             t.timestamp
+                           })"
+                           ${
+                             this.selectedTransactions.has(t.timestamp)
+                               ? "checked"
+                               : ""
+                           }>
+                `
+                    : ""
+                }
             <div class="transaction-info">
                 <div class="transaction-header">
                     <span class="transaction-category">${t.category.replace(
@@ -396,18 +419,18 @@ class FinanceApp {
                 ${t.type === "income" ? "+" : "-"}₹${t.amount.toFixed(2)}
             </div>
             <div class="transaction-actions">
-            ${!this.selectMode ? `
-            <button class="btn-edit" onclick="app.editTransaction(${
-              t.timestamp
-            })" aria-label="Edit transaction">
+            ${
+              !this.selectMode
+                ? `
+            <button class="btn-edit" onclick="app.editTransaction(${t.timestamp})" aria-label="Edit transaction">
                         ✏️
                     </button>
-                <button class="btn-delete" onclick="app.deleteTransaction(${
-                  t.timestamp
-                })" aria-label="Delete transaction">
+                <button class="btn-delete" onclick="app.deleteTransaction(${t.timestamp})" aria-label="Delete transaction">
                     🗑️
                 </button>
-                ` : ''}
+                `
+                : ""
+            }
             </div>
         </div>
     `
@@ -448,15 +471,15 @@ class FinanceApp {
   }
 
   deleteTransaction(timestamp) {
-        this.showConfirmModal(
-            'Are you sure you want to delete this transaction?',
-            () => {
-                this.transactions.delete(timestamp);
-                this.render();
-                this.ui.showToast('Transaction deleted', 'success');
-            }
-        );
-    }
+    this.showConfirmModal(
+      "Are you sure you want to delete this transaction?",
+      () => {
+        this.transactions.delete(timestamp);
+        this.render();
+        this.ui.showToast("Transaction deleted", "success");
+      }
+    );
+  }
 
   renderBudgets() {
     const budgets = this.budgets.getAll();
@@ -654,139 +677,150 @@ class FinanceApp {
     submitBtn.textContent = "Add Transaction";
     cancelBtn.style.display = "none";
   }
-  
+
   // Bulk Delete Methods
-    toggleSelectMode() {
-        this.selectMode = !this.selectMode;
-        this.selectedTransactions.clear();
-        
-        const selectBtn = document.getElementById('select-mode-btn');
-        const deleteSelectedBtn = document.getElementById('delete-selected-btn');
-        const transactionsList = document.getElementById('transactions-list');
-        
-        if (this.selectMode) {
-            selectBtn.textContent = 'Cancel';
-            selectBtn.classList.add('btn-secondary');
-            deleteSelectedBtn.style.display = 'inline-block';
-            transactionsList.classList.add('select-mode-active');
-        } else {
-            selectBtn.textContent = 'Select';
-            selectBtn.classList.remove('btn-secondary');
-            deleteSelectedBtn.style.display = 'none';
-            transactionsList.classList.remove('select-mode-active');
-        }
-        
-        this.render();
+  toggleSelectMode() {
+    this.selectMode = !this.selectMode;
+    this.selectedTransactions.clear();
+
+    const selectBtn = document.getElementById("select-mode-btn");
+    const deleteSelectedBtn = document.getElementById("delete-selected-btn");
+    const transactionsList = document.getElementById("transactions-list");
+
+    if (this.selectMode) {
+      selectBtn.textContent = "Cancel";
+      selectBtn.classList.add("btn-secondary");
+      deleteSelectedBtn.style.display = "inline-block";
+      transactionsList.classList.add("select-mode-active");
+    } else {
+      selectBtn.textContent = "Select";
+      selectBtn.classList.remove("btn-secondary");
+      deleteSelectedBtn.style.display = "none";
+      transactionsList.classList.remove("select-mode-active");
     }
 
-    toggleTransactionSelection(timestamp) {
-        if (this.selectedTransactions.has(timestamp)) {
-            this.selectedTransactions.delete(timestamp);
-        } else {
-            this.selectedTransactions.add(timestamp);
-        }
-        
-        // Update checkbox state
-        const checkbox = document.querySelector(`input[data-timestamp="${timestamp}"]`);
-        if (checkbox) {
-            checkbox.checked = this.selectedTransactions.has(timestamp);
-        }
-        
-        // Update transaction item appearance
-        const transactionItem = checkbox?.closest('.transaction-item');
-        if (transactionItem) {
-            if (this.selectedTransactions.has(timestamp)) {
-                transactionItem.classList.add('selected');
-            } else {
-                transactionItem.classList.remove('selected');
-            }
-        }
-        
-        // Update delete selected button text
-        const deleteSelectedBtn = document.getElementById('delete-selected-btn');
-        const count = this.selectedTransactions.size;
-        deleteSelectedBtn.textContent = count > 0 ? `Delete Selected (${count})` : 'Delete Selected';
+    this.render();
+  }
+
+  toggleTransactionSelection(timestamp) {
+    if (this.selectedTransactions.has(timestamp)) {
+      this.selectedTransactions.delete(timestamp);
+    } else {
+      this.selectedTransactions.add(timestamp);
     }
 
-    deleteSelected() {
-        if (this.selectedTransactions.size === 0) {
-            this.ui.showToast('No transactions selected', 'error');
-            return;
-        }
-        
-        const count = this.selectedTransactions.size;
-        const message = `Are you sure you want to delete ${count} selected transaction${count > 1 ? 's' : ''}? This action cannot be undone.`;
-        
-        this.showConfirmModal(message, () => {
-            this.selectedTransactions.forEach(timestamp => {
-                this.transactions.delete(timestamp);
-            });
-            
-            this.selectedTransactions.clear();
-            this.selectMode = false;
-            this.toggleSelectMode(); // Reset select mode
-            this.render();
-            
-            this.ui.showToast(`${count} transaction${count > 1 ? 's' : ''} deleted successfully`, 'success');
-        });
+    // Update checkbox state
+    const checkbox = document.querySelector(
+      `input[data-timestamp="${timestamp}"]`
+    );
+    if (checkbox) {
+      checkbox.checked = this.selectedTransactions.has(timestamp);
     }
 
-    deleteAll() {
-        const allTransactions = this.transactions.getAll();
-        
-        if (allTransactions.length === 0) {
-            this.ui.showToast('No transactions to delete', 'error');
-            return;
-        }
-        
-        const count = allTransactions.length;
-        const message = `Are you sure you want to delete ALL ${count} transactions? This action cannot be undone.`;
-        
-        this.showConfirmModal(message, () => {
-            // Delete all transactions
-            allTransactions.forEach(transaction => {
-                this.transactions.delete(transaction.timestamp);
-            });
-            
-            // Reset select mode if active
-            if (this.selectMode) {
-                this.selectMode = false;
-                this.toggleSelectMode();
-            }
-            
-            this.render();
-            this.ui.showToast(`All ${count} transactions deleted successfully`, 'success');
-         });
+    // Update transaction item appearance
+    const transactionItem = checkbox?.closest(".transaction-item");
+    if (transactionItem) {
+      if (this.selectedTransactions.has(timestamp)) {
+        transactionItem.classList.add("selected");
+      } else {
+        transactionItem.classList.remove("selected");
+      }
     }
 
-    // Confirmation Modal Methods
-    showConfirmModal(message, callback) {
-        this.confirmCallback = callback;
-        document.getElementById('confirm-message').textContent = message;
-        document.getElementById('confirm-modal').classList.add('active');
+    // Update delete selected button text
+    const deleteSelectedBtn = document.getElementById("delete-selected-btn");
+    const count = this.selectedTransactions.size;
+    deleteSelectedBtn.textContent =
+      count > 0 ? `Delete Selected (${count})` : "Delete Selected";
+  }
+
+  deleteSelected() {
+    if (this.selectedTransactions.size === 0) {
+      this.ui.showToast("No transactions selected", "error");
+      return;
     }
 
-    closeConfirmModal() {
-        this.confirmCallback = null;
-        document.getElementById('confirm-modal').classList.remove('active');
+    const count = this.selectedTransactions.size;
+    const message = `Are you sure you want to delete ${count} selected transaction${
+      count > 1 ? "s" : ""
+    }? This action cannot be undone.`;
+
+    this.showConfirmModal(message, () => {
+      this.selectedTransactions.forEach((timestamp) => {
+        this.transactions.delete(timestamp);
+      });
+
+      this.selectedTransactions.clear();
+      this.selectMode = false;
+      this.toggleSelectMode(); // Reset select mode
+      this.render();
+
+      this.ui.showToast(
+        `${count} transaction${count > 1 ? "s" : ""} deleted successfully`,
+        "success"
+      );
+    });
+  }
+
+  deleteAll() {
+    const allTransactions = this.transactions.getAll();
+
+    if (allTransactions.length === 0) {
+      this.ui.showToast("No transactions to delete", "error");
+      return;
     }
 
-    handleConfirmYes() {
-        if (this.confirmCallback) {
-            this.confirmCallback();
-            this.confirmCallback = null;
-        }
-        this.closeConfirmModal();
-    }
+    const count = allTransactions.length;
+    const message = `Are you sure you want to delete ALL ${count} transactions? This action cannot be undone.`;
 
-    // Budget Edit/Delete Methods
-    openBudgetOptions(category, currentLimit) {
-        // Create modal HTML
-        const modalHTML = `
+    this.showConfirmModal(message, () => {
+      // Delete all transactions
+      allTransactions.forEach((transaction) => {
+        this.transactions.delete(transaction.timestamp);
+      });
+
+      // Reset select mode if active
+      if (this.selectMode) {
+        this.selectMode = false;
+        this.toggleSelectMode();
+      }
+
+      this.render();
+      this.ui.showToast(
+        `All ${count} transactions deleted successfully`,
+        "success"
+      );
+    });
+  }
+
+  // Confirmation Modal Methods
+  showConfirmModal(message, callback) {
+    this.confirmCallback = callback;
+    document.getElementById("confirm-message").textContent = message;
+    document.getElementById("confirm-modal").classList.add("active");
+  }
+
+  closeConfirmModal() {
+    this.confirmCallback = null;
+    document.getElementById("confirm-modal").classList.remove("active");
+  }
+
+  handleConfirmYes() {
+    if (this.confirmCallback) {
+      this.confirmCallback();
+      this.confirmCallback = null;
+    }
+    this.closeConfirmModal();
+  }
+
+  // Budget Edit/Delete Methods
+  openBudgetOptions(category, currentLimit) {
+    // Create modal HTML
+    const modalHTML = `
             <div class="modal active" id="budget-options-modal">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h3>Manage Budget: ${category.replace('-', ' ')}</h3>
+                        <h3>Manage Budget: ${category.replace("-", " ")}</h3>
                         <button class="modal-close" onclick="app.closeBudgetOptions()">×</button>
                     </div>
                     <div class="modal-body">
@@ -796,7 +830,7 @@ class FinanceApp {
                                 type="number" 
                                 id="edit-budget-amount" 
                                 value="${currentLimit}" 
-                                min="0.01" 
+                                min="1" 
                                 step="0.01"
                                 required
                             >
@@ -810,79 +844,145 @@ class FinanceApp {
                 </div>
             </div>
         `;
-        
-        // Remove existing modal if any
-        const existingModal = document.getElementById('budget-options-modal');
-        if (existingModal) {
-            existingModal.remove();
-        }
-        
-        // Add modal to body
-        document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+    // Remove existing modal if any
+    const existingModal = document.getElementById("budget-options-modal");
+    if (existingModal) {
+      existingModal.remove();
     }
 
-    closeBudgetOptions() {
-        const modal = document.getElementById('budget-options-modal');
-        if (modal) {
-            modal.remove();
-        }
+    // Add modal to body
+    document.body.insertAdjacentHTML("beforeend", modalHTML);
+  }
+
+  closeBudgetOptions() {
+    const modal = document.getElementById("budget-options-modal");
+    if (modal) {
+      modal.remove();
+    }
+  }
+
+  updateBudget(category) {
+    const newLimit = parseFloat(
+      document.getElementById("edit-budget-amount").value
+    );
+
+    if (!newLimit || newLimit <= 0) {
+      this.ui.showToast("Please enter a valid budget amount", "error");
+      return;
     }
 
-    updateBudget(category) {
-        const newLimit = parseFloat(document.getElementById('edit-budget-amount').value);
-        
-        if (!newLimit || newLimit <= 0) {
-            this.ui.showToast('Please enter a valid budget amount', 'error');
-            return;
-        }
-        
-        this.budgets.set(category, newLimit);
-        this.closeBudgetOptions();
-        this.render();
-        this.ui.showToast('Budget updated successfully!', 'success');
-    }
+    this.budgets.set(category, newLimit);
+    this.closeBudgetOptions();
+    this.render();
+    this.ui.showToast("Budget updated successfully!", "success");
+  }
 
-    deleteBudget(category) {
-        const message = `Are you sure you want to delete the budget for ${category.replace('-', ' ')}?`;
-        
-        this.showConfirmModal(message, () => {
-            this.budgets.delete(category);
-            this.closeBudgetOptions();
-            this.render();
-            this.ui.showToast('Budget deleted successfully!', 'success');
-        });
-    }
-        // Hamburger Menu
-    setupHamburgerMenu() {
-        const hamburger = document.getElementById('hamburger-menu');
-        const navMenu = document.getElementById('nav-menu');
-        
-        if (!hamburger || !navMenu) return;
-        
-        hamburger.addEventListener('click', () => {
-            hamburger.classList.toggle('active');
-            navMenu.classList.toggle('active');
-        });
-        
-        // Close menu when clicking nav links
-        const navLinks = navMenu.querySelectorAll('.nav-link');
-        navLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                hamburger.classList.remove('active');
-                navMenu.classList.remove('active');
-            });
-        });
-        
-        // Close menu when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!hamburger.contains(e.target) && !navMenu.contains(e.target)) {
-                hamburger.classList.remove('active');
-                navMenu.classList.remove('active');
-            }
-        });
-    }
+  deleteBudget(category) {
+    const message = `Are you sure you want to delete the budget for ${category.replace(
+      "-",
+      " "
+    )}?`;
+
+    this.showConfirmModal(message, () => {
+      this.budgets.delete(category);
+      this.closeBudgetOptions();
+      this.render();
+      this.ui.showToast("Budget deleted successfully!", "success");
+    });
+  }
+  // Hamburger Menu
+  setupHamburgerMenu() {
+    const hamburger = document.getElementById("hamburger-menu");
+    const navMenu = document.getElementById("nav-menu");
+
+    if (!hamburger || !navMenu) return;
+
+    hamburger.addEventListener("click", () => {
+      hamburger.classList.toggle("active");
+      navMenu.classList.toggle("active");
+    });
+
+    // Close menu when clicking nav links
+    const navLinks = navMenu.querySelectorAll(".nav-link");
+    navLinks.forEach((link) => {
+      link.addEventListener("click", () => {
+        hamburger.classList.remove("active");
+        navMenu.classList.remove("active");
+      });
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener("click", (e) => {
+      if (!hamburger.contains(e.target) && !navMenu.contains(e.target)) {
+        hamburger.classList.remove("active");
+        navMenu.classList.remove("active");
+      }
+    });
+  }
+
+  // Custom Step for Amount Inputs
+  setupCustomStep() {
+    const amountInputs = [
+      document.getElementById("transaction-amount"),
+      document.getElementById("budget-amount"),
+    ];
+
+    amountInputs.forEach((input) => {
+      if (!input) return;
+
+      let isSpinnerClick = false;
+      let previousValue = input.value;
+
+      // Intercept mousedown on spinner buttons
+      input.addEventListener("mousedown", (e) => {
+        // Check if click is on spinner area (right side of input)
+        const rect = input.getBoundingClientRect();
+        const clickX = e.clientX - rect.left;
+        const inputWidth = rect.width;
+
+        // Spinner is typically in the last 20px
+        if (clickX > inputWidth - 25) {
+          isSpinnerClick = true;
+          previousValue = input.value;
+        }
+      });
+
+      // Handle keyboard arrow keys
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowUp") {
+          e.preventDefault();
+          const currentValue = parseFloat(input.value) || 0;
+          input.value = currentValue + 100;
+        } else if (e.key === "ArrowDown") {
+          e.preventDefault();
+          const currentValue = parseFloat(input.value) || 0;
+          const newValue = currentValue - 100;
+          input.value = newValue > 0 ? newValue : 0;
+        }
+      });
+
+      // Handle spinner clicks
+      input.addEventListener("input", () => {
+        if (isSpinnerClick) {
+          const currentValue = parseFloat(input.value) || 0;
+          const prevValue = parseFloat(previousValue) || 0;
+
+          if (currentValue > prevValue) {
+            // Up clicked
+            input.value = prevValue + 100;
+          } else if (currentValue < prevValue) {
+            // Down clicked
+            const newValue = prevValue - 100;
+            input.value = newValue > 0 ? newValue : 0;
+          }
+
+          isSpinnerClick = false;
+        }
+      });
+    });
+  }
 }
-
 
 // Initialize app
 const app = new FinanceApp();

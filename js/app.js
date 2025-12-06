@@ -5,6 +5,7 @@ import { BudgetManager } from "./modules/budgets.js";
 import { UIManager } from "./modules/ui.js";
 import { ThemeManager } from "./modules/theme.js";
 import { ChartManager } from "./modules/charts.js";
+import { ExportManager } from "./modules/export.js";
 
 class FinanceApp {
   constructor() {
@@ -14,6 +15,7 @@ class FinanceApp {
     this.ui = new UIManager();
     this.theme = new ThemeManager();
     this.charts = new ChartManager();
+    this.export = new ExportManager();
 
     // Edit mode state
     this.editMode = false;
@@ -135,6 +137,14 @@ class FinanceApp {
     document.querySelectorAll(".modal-close, .modal-cancel").forEach((btn) => {
       btn.addEventListener("click", () => this.ui.closeModal());
     });
+
+    // Export
+    document
+      .getElementById("export-json-btn")
+      .addEventListener("click", () => this.handleExportJSON());
+    document
+      .getElementById("export-csv-btn")
+      .addEventListener("click", () => this.handleExportCSV());
 
     // Set default date
     const dateInput = document.getElementById("transaction-date");
@@ -265,6 +275,21 @@ class FinanceApp {
       this.render();
       this.ui.showToast("Transaction redone", "success");
     }
+  }
+
+  // Export Methods  // ← YEH DONO METHODS ADD KARO
+  handleExportJSON() {
+    const data = {
+      transactions: this.transactions.getAll(),
+      budgets: this.budgets.getAll(),
+    };
+    this.export.toJSON(data, "finance-data.json");
+    this.ui.showToast("Data exported as JSON", "success");
+  }
+
+  handleExportCSV() {
+    this.export.toCSV(this.transactions.getAll(), "transactions.csv");
+    this.ui.showToast("Transactions exported as CSV", "success");
   }
 
   checkRecurringTransactions() {

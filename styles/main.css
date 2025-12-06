@@ -1534,3 +1534,33 @@ section h2 {
 [data-theme="dark"] .team-email:hover {
     background: rgba(129, 140, 248, 0.15);
 }
+
+/* Dark Mode - Toast Notifications */
+[data-theme="dark"] .toast {
+    background: #1f2937;
+    color: #f9fafb;
+    border: 1px solid rgba(129, 140, 248, 0.3);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(129, 140, 248, 0.2);
+}
+
+[data-theme="dark"] .toast--success {
+    background: #10b981;
+    color: white;
+    border-color: rgba(52, 211, 153, 0.5);
+    box-shadow: 0 8px 24px rgba(16, 185, 129, 0.4);
+}
+
+[data-theme="dark"] .toast--error {
+    background: #ef4444;
+    color: white;
+    border-color: rgba(248, 113, 113, 0.5);
+    box-shadow: 0 8px 24px rgba(239, 68, 68, 0.4);
+}
+
+[data-theme="dark"] .toast--info {
+    background: #818cf8;
+    color: white;
+    border-color: rgba(129, 140, 248, 0.5);
+    box-shadow: 0 8px 24px rgba(129, 140, 248, 0.4);
+}

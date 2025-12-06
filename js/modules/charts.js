@@ -3,14 +3,14 @@ export class ChartManager {
     constructor() {
         // Soft pastel colors - gentle and easy on the eyes
         this.colors = [
-            '#FFB6C1', // Pastel Pink
-            '#89CFF0', // Baby Blue
-            '#98FF98', // Mint Green
-            '#FFB347', // Pastel Orange
-            '#E6E6FA', // Lavender
-            '#FFDAB9', // Light Peach
-            '#D3D3D3', // Soft Gray 
-            '#93E9BE'  // Seafoam Green 
+            '#FFB6C1', // Pastel Pink - romance and sentimentality
+            '#89CFF0', // Baby Blue - tranquility and airy feel
+            '#98FF98', // Mint Green - fresh, nature, easy on eyes
+            '#FFB347', // Pastel Orange - warm and visible
+            '#E6E6FA', // Lavender - calming and sophisticated
+            '#FFDAB9', // Light Peach - warm and inviting
+            '#D3D3D3', // Soft Gray - elegant and neutral
+            '#93E9BE'  // Seafoam Green - soothing coastal vibe
         ];
         
         // Store chart data for interactivity
@@ -166,18 +166,25 @@ export class ChartManager {
     }
     
     addPieChartInteraction(canvas) {
-        // Skip if already has listeners to prevent infinite loops
-        if (canvas._hasListeners) return;
-        canvas._hasListeners = true;
+        // Remove old listeners first to prevent duplicates
+        if (canvas._mouseMove) {
+            canvas.removeEventListener('mousemove', canvas._mouseMove);
+        }
+        if (canvas._mouseLeave) {
+            canvas.removeEventListener('mouseleave', canvas._mouseLeave);
+        }
         
-        canvas.style.cursor = 'pointer';
+        canvas.style.cursor = 'default';
         
         const handleMouseMove = (e) => {
             if (!this.pieChartData) return;
             
             const rect = canvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
+            // Fix: Scale mouse coordinates to match canvas internal coordinates
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            const x = (e.clientX - rect.left) * scaleX;
+            const y = (e.clientY - rect.top) * scaleY;
             
             const { centerX, centerY, slices } = this.pieChartData;
             const dx = x - centerX;
@@ -205,8 +212,6 @@ export class ChartManager {
             
             if (hoveredIndex !== this.hoveredSlice) {
                 this.hoveredSlice = hoveredIndex;
-                // Temporarily remove listener to prevent infinite loop
-                canvas._hasListeners = false;
                 this.renderPieChart('category-chart', 
                     Object.fromEntries(this.pieChartData.entries));
             }
@@ -215,11 +220,14 @@ export class ChartManager {
         const handleMouseLeave = () => {
             if (this.hoveredSlice !== -1) {
                 this.hoveredSlice = -1;
-                canvas._hasListeners = false;
                 this.renderPieChart('category-chart', 
                     Object.fromEntries(this.pieChartData.entries));
             }
         };
+        
+        // Store handlers for cleanup
+        canvas._mouseMove = handleMouseMove;
+        canvas._mouseLeave = handleMouseLeave;
         
         canvas.addEventListener('mousemove', handleMouseMove);
         canvas.addEventListener('mouseleave', handleMouseLeave);
@@ -348,8 +356,27 @@ export class ChartManager {
             if (isHovered) {
                 const tooltipWidth = 120;
                 const tooltipHeight = 50;
-                const tooltipX = x - tooltipWidth / 2;
-                const tooltipY = y - tooltipHeight - 15;
+                const tooltipPadding = 15;
+                
+                // Smart positioning: show below if point is in top 30% of chart, otherwise show above
+                const isTopPoint = y < (padding + chartHeight * 0.3);
+                
+                let tooltipX = x - tooltipWidth / 2;
+                let tooltipY = isTopPoint ? y + tooltipPadding : y - tooltipHeight - tooltipPadding;
+                
+                // Ensure tooltip doesn't go off left/right edges
+                if (tooltipX < padding) {
+                    tooltipX = padding;
+                } else if (tooltipX + tooltipWidth > width - padding) {
+                    tooltipX = width - padding - tooltipWidth;
+                }
+                
+                // Ensure tooltip doesn't go off top/bottom edges
+                if (tooltipY < padding) {
+                    tooltipY = y + tooltipPadding; // Force below if too high
+                } else if (tooltipY + tooltipHeight > height - padding) {
+                    tooltipY = height - padding - tooltipHeight; // Force above if too low
+                }
                 
                 // Tooltip background (using rect instead of roundRect for compatibility)
                 ctx.fillStyle = this.isDarkTheme() ? '#1f2937' : '#ffffff';
@@ -365,7 +392,7 @@ export class ChartManager {
                 const date = new Date(point.date);
                 ctx.fillText(
                     `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`,
-                    x,
+                    tooltipX + tooltipWidth / 2,
                     tooltipY + 20
                 );
                 
@@ -373,7 +400,7 @@ export class ChartManager {
                 ctx.fillStyle = '#6366f1';
                 ctx.fillText(
                     `₹${point.amount.toFixed(2)}`,
-                    x,
+                    tooltipX + tooltipWidth / 2,
                     tooltipY + 38
                 );
             }
@@ -405,18 +432,25 @@ export class ChartManager {
     }
     
     addLineChartInteraction(canvas) {
-        // Skip if already has listeners to prevent infinite loops
-        if (canvas._hasListeners) return;
-        canvas._hasListeners = true;
+        // Remove old listeners first to prevent duplicates
+        if (canvas._mouseMove) {
+            canvas.removeEventListener('mousemove', canvas._mouseMove);
+        }
+        if (canvas._mouseLeave) {
+            canvas.removeEventListener('mouseleave', canvas._mouseLeave);
+        }
         
-        canvas.style.cursor = 'pointer';
+        canvas.style.cursor = 'default';
         
         const handleMouseMove = (e) => {
             if (!this.lineChartData) return;
             
             const rect = canvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
+            // Fix: Scale mouse coordinates to match canvas internal coordinates
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            const x = (e.clientX - rect.left) * scaleX;
+            const y = (e.clientY - rect.top) * scaleY;
             
             let hoveredIndex = -1;
             
@@ -432,7 +466,6 @@ export class ChartManager {
             
             if (hoveredIndex !== this.hoveredPoint) {
                 this.hoveredPoint = hoveredIndex;
-                canvas._hasListeners = false;
                 this.renderLineChart('trend-chart', this.lineChartData.data);
             }
         };
@@ -440,21 +473,15 @@ export class ChartManager {
         const handleMouseLeave = () => {
             if (this.hoveredPoint !== -1) {
                 this.hoveredPoint = -1;
-                canvas._hasListeners = false;
                 this.renderLineChart('trend-chart', this.lineChartData.data);
             }
         };
         
-        const handleClick = (e) => {
-            if (!this.lineChartData || this.hoveredPoint === -1) return;
-            
-            const point = this.lineChartData.data[this.hoveredPoint];
-            const date = new Date(point.date);
-            alert(`Date: ${date.toLocaleDateString('en-IN')}\nAmount: ₹${point.amount.toFixed(2)}`);
-        };
+        // Store handlers for cleanup
+        canvas._mouseMove = handleMouseMove;
+        canvas._mouseLeave = handleMouseLeave;
         
         canvas.addEventListener('mousemove', handleMouseMove);
         canvas.addEventListener('mouseleave', handleMouseLeave);
-        canvas.addEventListener('click', handleClick);
     }
 }

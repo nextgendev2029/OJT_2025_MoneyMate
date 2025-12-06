@@ -39,6 +39,9 @@ class FinanceApp {
     // Setup event listeners
     this.setupEventListeners();
 
+    // Setup hamburger menu
+        this.setupHamburgerMenu();
+
     // Initial render
     this.render();
 
@@ -849,7 +852,37 @@ class FinanceApp {
             this.ui.showToast('Budget deleted successfully!', 'success');
         });
     }
+        // Hamburger Menu
+    setupHamburgerMenu() {
+        const hamburger = document.getElementById('hamburger-menu');
+        const navMenu = document.getElementById('nav-menu');
+        
+        if (!hamburger || !navMenu) return;
+        
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navMenu.classList.toggle('active');
+        });
+        
+        // Close menu when clicking nav links
+        const navLinks = navMenu.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                navMenu.classList.remove('active');
+            });
+        });
+        
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!hamburger.contains(e.target) && !navMenu.contains(e.target)) {
+                hamburger.classList.remove('active');
+                navMenu.classList.remove('active');
+            }
+        });
+    }
 }
+
 
 // Initialize app
 const app = new FinanceApp();

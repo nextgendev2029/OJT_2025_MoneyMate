@@ -120,6 +120,12 @@ body::before {
     align-items: center;
 }
 
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
 .logo {
     font-size: 1.75rem;
     font-weight: 800;
@@ -166,6 +172,38 @@ body::before {
 
 .nav-link:hover::after {
     width: 100%;
+}
+
+/* Hamburger Menu */
+.hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    z-index: 1001;
+}
+
+.hamburger span {
+    width: 25px;
+    height: 3px;
+    background: var(--text-primary);
+    border-radius: 3px;
+    transition: all 0.3s ease;
+}
+
+.hamburger.active span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+}
+
+.hamburger.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -6px);
 }
 
 /* Main Content */
@@ -1027,7 +1065,7 @@ section h2 {
     }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 510px) {
     .container {
         padding: 0.75rem;
     }
@@ -1044,13 +1082,47 @@ section h2 {
         font-size: 1.25rem;
     }
     
+    /* Show hamburger menu */
+    .hamburger {
+        display: flex;
+    }
+    
+    /* Hide nav by default on mobile */
     .nav {
-        gap: 0.5rem;
+        position: fixed;
+        top: 70px;
+        right: -300px;
+        width: 70%;
+        max-width: 280px;
+        height: calc(100vh - 70px);
+        background: var(--bg-primary);
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 2rem 1.5rem;
+        gap: 1.5rem;
+        box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+        transition: right 0.3s ease;
+        z-index: 1000;
+    }
+    
+    .nav.active {
+        right: 0;
     }
     
     .nav-link {
-        font-size: 0.8rem;
-        padding: 0.25rem 0;
+        font-size: 1rem;
+        padding: 0.5rem 0;
+        width: 100%;
+    }
+    
+    .nav-link::after {
+        display: none;
+    }
+    
+    /* Theme toggle stays visible next to hamburger */
+    #theme-toggle {
+        display: flex;
+        margin: 0;
     }
     
     .balance-amount {
@@ -1132,6 +1204,15 @@ section h2 {
     background-clip: text;
     filter: drop-shadow(0 0 8px rgba(129, 140, 248, 0.4))
             drop-shadow(0 0 15px rgba(99, 102, 241, 0.3));
+}
+
+[data-theme="dark"] .hamburger span {
+    background: var(--text-primary);
+}
+
+[data-theme="dark"] .nav {
+    background: var(--bg-primary);
+    border-left: 1px solid var(--border);
 }
 
 [data-theme="dark"] .nav-link {

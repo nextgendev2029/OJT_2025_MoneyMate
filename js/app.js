@@ -61,9 +61,11 @@ class FinanceApp {
 
   setupEventListeners() {
     // Theme toggle
-    document.getElementById("theme-toggle").addEventListener("click", () => {
-      this.theme.toggle();
-    });
+    document.getElementById('theme-toggle').addEventListener('click', () => {
+            this.theme.toggle();
+            // Re-render charts to update colors for new theme
+            this.updateCharts();
+        });
 
     // Transaction form
     const form = document.getElementById("transaction-form");

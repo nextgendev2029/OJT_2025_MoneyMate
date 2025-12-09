@@ -107,14 +107,17 @@ body::before {
     z-index: 1;
 }
 
-/* Header */
+/* Header - Fixed at top, doesn't scroll away */
 .header {
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
     border-bottom: 1px solid rgba(148, 163, 184, 0.2);
     padding: 1rem 0;
-    position: sticky;
+    position: fixed;        /* Always stays at top */
     top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
     z-index: 100;
     box-shadow: 0 4px 20px rgba(99, 102, 241, 0.1);
 }
@@ -211,10 +214,11 @@ body::before {
     transform: rotate(-45deg) translate(7px, -6px);
 }
 
-/* Main Content */
+/* Main Content - Add top padding to account for fixed header */
 .main-content {
     flex: 1;
     padding: 2rem 0;
+    margin-top: 70px;       /* Space for fixed header (adjust if needed) */
     position: relative;
     z-index: 1;
 }

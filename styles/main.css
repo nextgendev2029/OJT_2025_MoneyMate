@@ -3,6 +3,11 @@
     padding: 0;
     box-sizing: border-box;
 }
+
+html {
+    overflow-x: hidden;
+}
+
 :root {
     --primary: #6366f1;
     --primary-dark: #4f46e5;
@@ -27,6 +32,7 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    overflow-x: hidden;
 }
 
 /* Accessibility */

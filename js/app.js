@@ -95,6 +95,7 @@ class FinanceApp {
     document
       .getElementById("select-mode-btn")
       .addEventListener("click", () => this.toggleSelectMode());
+      document.getElementById('select-all-btn').addEventListener('click', () => this.selectAllVisible());
     document
       .getElementById("delete-selected-btn")
       .addEventListener("click", () => this.deleteSelected());
@@ -742,17 +743,20 @@ class FinanceApp {
     this.selectedTransactions.clear();
 
     const selectBtn = document.getElementById("select-mode-btn");
+    const selectAllBtn = document.getElementById('select-all-btn');
     const deleteSelectedBtn = document.getElementById("delete-selected-btn");
     const transactionsList = document.getElementById("transactions-list");
 
     if (this.selectMode) {
       selectBtn.textContent = "Cancel";
       selectBtn.classList.add("btn-secondary");
+      selectAllBtn.style.display = 'inline-block';
       deleteSelectedBtn.style.display = "inline-block";
       transactionsList.classList.add("select-mode-active");
     } else {
       selectBtn.textContent = "Select";
       selectBtn.classList.remove("btn-secondary");
+      selectAllBtn.style.display = 'none';
       deleteSelectedBtn.style.display = "none";
       transactionsList.classList.remove("select-mode-active");
     }
@@ -760,6 +764,46 @@ class FinanceApp {
     this.render();
   }
 
+  selectAllVisible() {
+        // Get currently visible transactions (after filters)
+        const searchTerm = document.getElementById('search-input').value;
+        const filterType = document.getElementById('filter-type').value;
+        const filterCategory = document.getElementById('filter-category').value;
+        const sortBy = document.getElementById('sort-by').value;
+
+        let transactions = this.transactions.getAll();
+        
+        // Apply same filters as in render() method
+        if (searchTerm) {
+            transactions = transactions.filter(t => 
+                t.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                t.category.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+        }
+        
+        if (filterType !== 'all') {
+            transactions = transactions.filter(t => t.type === filterType);
+        }
+        
+        if (filterCategory !== 'all') {
+            transactions = transactions.filter(t => t.category === filterCategory);
+        }
+
+        // Sort transactions
+        transactions = this.sortTransactions(transactions, sortBy);
+
+        // Select all visible transactions
+        transactions.forEach(transaction => {
+            this.selectedTransactions.add(transaction.timestamp);
+        });
+
+        // Re-render to show selected state
+        this.render();
+        
+        // Show success message
+        this.ui.showToast(`${transactions.length} visible transactions selected`, 'success');
+    }
+    
   toggleTransactionSelection(timestamp) {
     if (this.selectedTransactions.has(timestamp)) {
       this.selectedTransactions.delete(timestamp);

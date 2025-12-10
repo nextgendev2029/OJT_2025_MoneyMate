@@ -955,6 +955,9 @@ class FinanceApp {
 
     // Add modal to body
     document.body.insertAdjacentHTML("beforeend", modalHTML);
+
+    // Apply custom step to the edit budget input
+        this.setupCustomStepForInput('edit-budget-amount');
   }
 
   closeBudgetOptions() {
@@ -1084,13 +1087,65 @@ class FinanceApp {
       });
     });
   }
+
+  // Helper function to setup custom step for a single input (for dynamic inputs)
+    setupCustomStepForInput(inputId) {
+        const input = document.getElementById(inputId);
+        if (!input) return;
+        
+        let isSpinnerClick = false;
+        let previousValue = input.value;
+        
+        // Intercept mousedown on spinner buttons
+        input.addEventListener('mousedown', (e) => {
+            // Check if click is on spinner area (right side of input)
+            const rect = input.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const inputWidth = rect.width;
+            
+            // Spinner is typically in the last 20px
+            if (clickX > inputWidth - 25) {
+                isSpinnerClick = true;
+                previousValue = input.value;
+            }
+        });
+        
+        // Handle keyboard arrow keys
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                const currentValue = parseFloat(input.value) || 0;
+                input.value = currentValue + 100;
+            } else if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                const currentValue = parseFloat(input.value) || 0;
+                const newValue = currentValue - 100;
+                input.value = newValue > 0 ? newValue : 0;
+            }
+        });
+        
+        // Handle spinner clicks
+        input.addEventListener('input', () => {
+            if (isSpinnerClick) {
+                const currentValue = parseFloat(input.value) || 0;
+                const prevValue = parseFloat(previousValue) || 0;
+                
+                if (currentValue > prevValue) {
+                    // Up clicked
+                    input.value = prevValue + 100;
+                } else if (currentValue < prevValue) {
+                    // Down clicked
+                    const newValue = prevValue - 100;
+                    input.value = newValue > 0 ? newValue : 0;
+                }
+                
+                isSpinnerClick = false;
+            }
+        });
+    }
+
 }
 
 // Initialize app
 const app = new FinanceApp();
 window.app = app;
-
-
-
-
-    

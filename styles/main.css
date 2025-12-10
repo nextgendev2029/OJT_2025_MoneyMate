@@ -943,12 +943,15 @@ section h2 {
 
 .modal-body {
     padding: 1.5rem;
+    padding-bottom: 2rem;          /* Extra space before buttons */
 }
 
 .modal-footer {
     display: flex;
     gap: 1rem;
-    justify-content: flex-end;
+    justify-content: center;       /* Center align buttons */
+    padding: 1rem 1.5rem 1.5rem;  /* Top, sides, bottom padding */
+    margin-top: 0.5rem;            /* Space from modal body */
 }
 
 /* Budget Options Modal */

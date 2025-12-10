@@ -279,20 +279,51 @@ class FinanceApp {
     }
   }
 
-  // Export Methods  // ← YEH DONO METHODS ADD KARO
+  // Export Methods
   handleExportJSON() {
-    const data = {
-      transactions: this.transactions.getAll(),
-      budgets: this.budgets.getAll(),
-    };
-    this.export.toJSON(data, "finance-data.json");
-    this.ui.showToast("Data exported as JSON", "success");
-  }
+        // Check if select mode is active and transactions are selected
+        if (this.selectMode && this.selectedTransactions.size > 0) {
+            // Export only selected transactions
+            const allTransactions = this.transactions.getAll();
+            const selectedTransactions = allTransactions.filter(t => 
+                this.selectedTransactions.has(t.timestamp)
+            );
+            
+            const data = {
+                transactions: selectedTransactions,
+                budgets: this.budgets.getAll()
+            };
+            
+            this.export.toJSON(data, `selected-transactions-${selectedTransactions.length}.json`);
+            this.ui.showToast(`${selectedTransactions.length} selected transactions exported as JSON`, 'success');
+        } else {
+            // Export all transactions (normal behavior)
+            const data = {
+                transactions: this.transactions.getAll(),
+                budgets: this.budgets.getAll()
+            };
+            this.export.toJSON(data, 'finance-data.json');
+            this.ui.showToast('All data exported as JSON', 'success');
+        }
+    }
 
   handleExportCSV() {
-    this.export.toCSV(this.transactions.getAll(), "transactions.csv");
-    this.ui.showToast("Transactions exported as CSV", "success");
-  }
+        // Check if select mode is active and transactions are selected
+        if (this.selectMode && this.selectedTransactions.size > 0) {
+            // Export only selected transactions
+            const allTransactions = this.transactions.getAll();
+            const selectedTransactions = allTransactions.filter(t => 
+                this.selectedTransactions.has(t.timestamp)
+            );
+            
+            this.export.toCSV(selectedTransactions, `selected-transactions-${selectedTransactions.length}.csv`);
+            this.ui.showToast(`${selectedTransactions.length} selected transactions exported as CSV`, 'success');
+        } else {
+            // Export all transactions (normal behavior)
+            this.export.toCSV(this.transactions.getAll(), 'transactions.csv');
+            this.ui.showToast('All transactions exported as CSV', 'success');
+        }
+    }
 
   checkRecurringTransactions() {
     const lastCheck = this.storage.get("lastRecurringCheck") || 0;
@@ -1014,3 +1045,8 @@ class FinanceApp {
 // Initialize app
 const app = new FinanceApp();
 window.app = app;
+
+
+
+
+    

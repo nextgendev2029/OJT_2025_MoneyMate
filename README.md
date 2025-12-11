@@ -15,29 +15,53 @@ A modern, feature-rich personal finance tracker built with vanilla HTML, CSS, an
 
 ### Advanced Features
 - **Budget Tracking**: Set monthly budgets for different categories with visual alerts
+  - Edit existing budgets with inline modal
+  - Delete budgets with confirmation
+  - Visual progress bars with color-coded warnings
 - **Smart Alerts**: Get notified when you're approaching or exceeding budget limits
 - **Recurring Transactions**: Automatically add monthly recurring bills
-- **Transaction Editing**: Edit any transaction with pre-populated form
-- **Bulk Operations**: 
+- **Transaction Editing**: Edit any transaction with pre-populated form and cancel option
+- **Enhanced Bulk Operations**: 
   - Select multiple transactions with checkboxes
-  - Delete selected transactions
+  - **Select All Visible**: Select all currently filtered/searched transactions
+  - **Selective Export**: Export only selected transactions (JSON/CSV)
+  - Delete selected transactions with count display
   - Delete all transactions with confirmation
 - **Undo/Redo**: Mistake-proof with transaction history management
-- **Search & Filter**: Quickly find transactions with debounced search
-- **Sorting**: Sort by date or amount (ascending/descending)
+- **Advanced Search & Filter**: 
+  - Debounced search across descriptions and categories
+  - Filter by transaction type (income/expense)
+  - Filter by category with dynamic category list
+  - Smart category filter updates based on existing transactions
+- **Flexible Sorting**: Sort by date or amount (ascending/descending)
 - **Pagination**: Clean display with 10 transactions per page
 - **Interactive Charts**: 
-  - Pie chart with hover effects and distinct pastel colors
-  - Line chart with clickable data points and tooltips
-  - Dark theme support for charts
-- **Data Export**: Download your data as JSON or CSV
-- **Dark/Light Theme**: Toggle between themes with smooth transitions
+  - Pie chart with precise hover detection and highlight effects
+  - Line chart with accurate tooltip positioning and click interactions
+  - **Automatic Theme Updates**: Charts re-render immediately when switching themes
+  - Dark theme support with proper color schemes
+- **Smart Data Export**: 
+  - Export all data as JSON or CSV
+  - **Selective Export**: Export only selected transactions when in select mode
+  - Dynamic filenames for selected exports (e.g., `selected-transactions-5.json`)
+- **Responsive Dark/Light Theme**: 
+  - Toggle between themes with smooth transitions
+  - **Fixed Theme Switching**: Works consistently across all pages (home, about, contact)
+  - **Improved Toast Notifications**: Proper visibility in both themes
+  - **Enhanced Contact Page**: Team member cards with proper dark mode styling
+- **Enhanced User Experience**:
+  - **100-Increment Feature**: All amount inputs support 100-step increments via arrow keys or spinner clicks
+  - **Fixed Header**: Header stays at top and doesn't scroll away
+  - **Improved Modal Design**: Centered buttons with proper spacing
+  - **Better Mobile Navigation**: Hamburger menu positioned below header, not overlapping
+  - **Responsive Design Fixes**: Proper navigation menu behavior in both light and dark themes
 - **Modern UI/UX**:
-  - Glassmorphism effects
+  - Glassmorphism effects with backdrop blur
   - Gradient backgrounds with animated patterns
-  - Glow effects on hover
+  - Glow effects on hover with theme-appropriate colors
   - Smooth animations and transitions
   - Finance-themed background patterns
+  - **Improved Accessibility**: Better contrast and visibility in all themes
 
 ## 🚀 Getting Started
 
@@ -52,8 +76,8 @@ A modern, feature-rich personal finance tracker built with vanilla HTML, CSS, an
 
 ```bash
 # If you want to run a local server (optional)
-# Using Python 3
-python -m http.server 8000
+# Using Python 3 (recommended for macOS users)
+python3 -m http.server 8000
 
 # Using Node.js
 npx serve
@@ -80,34 +104,63 @@ npx serve
 4. Click "Update Transaction"
 5. Click "Cancel" to exit edit mode
 
-### Bulk Delete Operations
-1. Click "Select" button in Transaction History
-2. Checkboxes appear next to each transaction
-3. Select multiple transactions
-4. Click "Delete Selected (X)" to remove selected items
-5. Or click "Delete All" to remove all transactions
-6. Confirmation dialog appears before deletion
+### Bulk Operations & Selective Export
+1. **Enter Select Mode**: Click "Select" button in Transaction History
+2. **Select Transactions**: 
+   - Checkboxes appear next to each transaction
+   - Select individual transactions by clicking checkboxes
+   - Use "Select All" to select all currently visible/filtered transactions
+3. **Bulk Actions**:
+   - **Delete Selected**: Click "Delete Selected (X)" to remove selected items
+   - **Export Selected**: Use "Export JSON" or "Export CSV" to export only selected transactions
+   - **Delete All**: Click "Delete All" to remove all transactions
+4. **Smart Features**:
+   - Selected count displays in delete button
+   - Confirmation dialogs appear before deletion
+   - Export filenames include selection count (e.g., `selected-transactions-5.json`)
+   - Select All respects current filters and search terms
 
-### Setting Budgets
-1. Click "Add Budget" button
-2. Select category
-3. Enter monthly limit
-4. Save
+### Budget Management
+1. **Add Budget**: 
+   - Click "Add Budget" button
+   - Select category
+   - Enter monthly limit (supports 100-increment feature)
+   - Save
+2. **Edit Budget**:
+   - Click on any existing budget item
+   - Modify the limit in the popup modal
+   - Click "Update Budget" to save changes
+3. **Delete Budget**:
+   - Click on budget item to open options
+   - Click "Delete Budget" and confirm
+4. **Budget Alerts**:
+   - Visual progress bars show spending vs. budget
+   - Color-coded warnings (yellow at 80%, red when exceeded)
+   - Alert messages appear when approaching or exceeding limits
 
 ### Viewing Insights
 - Scroll to the "Spending Insights" section
-- **Pie Chart**: 
-  - View category breakdown with pastel colors
-  - Hover over slices to see them pop out
+- **Enhanced Pie Chart**: 
+  - View category breakdown with distinct pastel colors
+  - **Precise Hover Detection**: Accurate highlighting when hovering over slices
   - Each slice shows category name, amount, and percentage
-- **Line Chart**: 
-  - Check 7-day spending trends
-  - Hover over data points to see tooltips
-  - Click on points to view detailed information
+  - Smooth pop-out animation effects
+- **Improved Line Chart**: 
+  - Check 7-day spending trends with accurate data points
+  - **Fixed Tooltip Positioning**: Tooltips appear exactly at data points
+  - **Smart Tooltip Placement**: Prevents tooltips from being cut off at chart edges
+  - Hover for detailed information without clicking
+  - **Theme-Responsive**: Charts automatically update colors when switching themes
 
-### Exporting Data
-- Click "Export JSON" for complete data backup
-- Click "Export CSV" for spreadsheet-compatible transaction list
+### Smart Data Export
+- **Full Export**:
+  - Click "Export JSON" for complete data backup (transactions + budgets)
+  - Click "Export CSV" for spreadsheet-compatible transaction list
+- **Selective Export** (New Feature):
+  - Enter select mode and choose specific transactions
+  - Export buttons will export only selected transactions
+  - Dynamic filenames show selection count (e.g., `selected-transactions-5.json`)
+  - Perfect for exporting specific date ranges or categories
 
 ## 🏗️ Project Structure
 
@@ -167,26 +220,56 @@ money-mate/
 ## 🧪 Testing
 
 ### Manual Testing Checklist
+#### Core Functionality
 - [ ] Add income transaction
 - [ ] Add expense transaction
-- [ ] Edit transaction
+- [ ] Edit transaction (form pre-population and cancel)
 - [ ] Delete single transaction
-- [ ] Bulk select and delete transactions
-- [ ] Delete all transactions
 - [ ] Undo/redo operations
-- [ ] Set budget and verify alerts
-- [ ] Search transactions
-- [ ] Filter by type and category
-- [ ] Sort transactions
-- [ ] Navigate pagination
-- [ ] Toggle dark/light theme
-- [ ] Test chart interactions (hover, click)
-- [ ] Export JSON and CSV
-- [ ] Test on mobile device
-- [ ] Test keyboard navigation
 - [ ] Verify data persists after page reload
-- [ ] Check responsive design on different screen sizes
+
+#### Budget Management
+- [ ] Set budget and verify alerts
+- [ ] Edit existing budget via click
+- [ ] Delete budget with confirmation
+- [ ] Test 100-increment feature on budget amounts
+
+#### Advanced Features
+- [ ] **Bulk Operations**: Select multiple transactions
+- [ ] **Select All**: Select all visible/filtered transactions
+- [ ] **Selective Export**: Export only selected transactions (JSON/CSV)
+- [ ] Delete selected transactions
+- [ ] Delete all transactions
+- [ ] Search transactions (debounced)
+- [ ] Filter by type and category
+- [ ] Sort transactions (date/amount, asc/desc)
+- [ ] Navigate pagination
+
+#### Theme & UI
+- [ ] **Theme Toggle**: Test on all pages (home, about, contact)
+- [ ] **Toast Notifications**: Verify visibility in both themes
+- [ ] **Contact Page**: Check team member cards in dark mode
+- [ ] **Modal Design**: Verify centered buttons and proper spacing
 - [ ] Test glassmorphism and glow effects
+
+#### Charts & Interactions
+- [ ] **Pie Chart**: Test precise hover detection and highlighting
+- [ ] **Line Chart**: Verify accurate tooltip positioning
+- [ ] **Theme Updates**: Charts re-render when switching themes
+- [ ] Test chart interactions without infinite alerts
+
+#### Responsive Design
+- [ ] **Mobile Navigation**: Hamburger menu positioned below header
+- [ ] **Fixed Header**: Header stays at top, doesn't scroll away
+- [ ] **Navigation Menu**: Proper behavior in both light and dark themes
+- [ ] Test on mobile device
+- [ ] Check responsive design on different screen sizes
+- [ ] Test keyboard navigation and accessibility
+
+#### Input Features
+- [ ] **100-Increment**: Test on all amount inputs (transaction, budget, edit budget)
+- [ ] **Arrow Keys**: Up/down arrows increment by 100
+- [ ] **Spinner Clicks**: Mouse clicks on input spinners increment by 100
 
 ### Browser Compatibility
 - ✅ Chrome 90+
@@ -194,13 +277,29 @@ money-mate/
 - ✅ Safari 14+
 - ✅ Edge 90+
 
-## 📊 Performance Metrics
+## 📊 Performance & Quality
 
+### Performance Metrics
 Run Lighthouse audit in Chrome DevTools:
-- Performance: Target 90+
-- Accessibility: Target 95+
-- Best Practices: Target 90+
-- SEO: Target 90+
+- **Performance**: Target 90+ (optimized with debounced search, efficient DOM updates)
+- **Accessibility**: Target 95+ (ARIA labels, keyboard navigation, screen reader support)
+- **Best Practices**: Target 90+ (secure localStorage, proper error handling)
+- **SEO**: Target 90+ (semantic HTML, meta tags, structured data)
+
+### Code Quality Features
+- **Modular Architecture**: ES6 modules with clear separation of concerns
+- **Error Handling**: Graceful handling of edge cases and user errors
+- **Performance Optimizations**:
+  - Debounced search (300ms delay)
+  - Efficient chart rendering with Canvas API
+  - Smart DOM updates to minimize reflows
+  - Pagination to handle large datasets
+- **Accessibility Compliance**:
+  - ARIA labels and roles throughout
+  - Keyboard navigation support
+  - High contrast ratios in both themes
+  - Screen reader friendly content
+- **Browser Compatibility**: Works across modern browsers with fallbacks
 
 ## 🎨 Design Features
 
@@ -210,12 +309,19 @@ Run Lighthouse audit in Chrome DevTools:
 - **Balance Cards**: Individual gradient colors with matching glow effects
 - **Charts**: Pastel colors for better visibility
 
-### Visual Effects
-- **Glassmorphism**: Frosted glass effect on cards and sections
-- **Hover Animations**: Lift, scale, and glow effects
-- **Gradient Backgrounds**: Animated multi-color gradients
-- **Background Patterns**: Subtle finance-themed patterns
-- **Smooth Transitions**: All interactions have smooth animations
+### Visual Effects & Recent Improvements
+- **Glassmorphism**: Frosted glass effect on cards and sections with backdrop blur
+- **Enhanced Hover Animations**: Lift, scale, and glow effects with theme-appropriate colors
+- **Gradient Backgrounds**: Animated multi-color gradients with smooth transitions
+- **Background Patterns**: Subtle finance-themed patterns with proper opacity
+- **Smooth Transitions**: All interactions have 0.3s ease transitions
+- **Fixed UI Elements**:
+  - **Header**: Now properly fixed at top, doesn't scroll away
+  - **Navigation**: Responsive hamburger menu positioned below header
+  - **Modals**: Centered buttons with proper spacing and padding
+  - **Toast Notifications**: Improved visibility in both light and dark themes
+- **Theme Consistency**: All pages (home, about, contact) support theme switching
+- **Mobile Optimizations**: Better responsive behavior across all screen sizes
 
 ### Customization
 
@@ -245,26 +351,58 @@ Edit the category options in `js/app.js` in the `updateCategoryOptions()` method
 
 ## 🔮 Future Enhancements
 
-- [ ] Service Worker for offline functionality
-- [ ] Import data from JSON/CSV
-- [ ] Multi-currency support
-- [ ] Advanced analytics and reports
-- [ ] Data backup to cloud
-- [ ] Budget recommendations using AI
-- [ ] Bill reminders and notifications
-- [ ] Category-wise spending goals
-- [ ] Monthly/yearly financial reports
-- [ ] Data visualization improvements
-- [ ] Mobile app version
+### Planned Features
+- [ ] **Import Functionality**: Import data from JSON/CSV files
+- [ ] **Advanced Analytics**: Monthly/yearly financial reports with trends
+- [ ] **Multi-currency Support**: Handle different currencies with conversion
+- [ ] **Cloud Backup**: Sync data across devices
+- [ ] **Smart Notifications**: Bill reminders and budget alerts
+- [ ] **AI-Powered Insights**: Budget recommendations and spending analysis
+
+### Technical Improvements
+- [ ] **Service Worker**: Offline functionality and caching
+- [ ] **Progressive Web App**: Install as mobile app
+- [ ] **Advanced Charts**: More visualization types (bar charts, donut charts)
+- [ ] **Bulk Import**: CSV import for migrating from other apps
+- [ ] **Category Management**: Custom categories and subcategories
+- [ ] **Advanced Filtering**: Date ranges, amount ranges, multiple categories
+
+### User Experience
+- [ ] **Keyboard Shortcuts**: Quick actions via keyboard
+- [ ] **Drag & Drop**: Reorder transactions or bulk operations
+- [ ] **Advanced Search**: Search by amount ranges, date ranges
+- [ ] **Transaction Templates**: Save frequently used transaction patterns
+- [ ] **Goal Tracking**: Savings goals and progress tracking
+- [ ] **Receipt Attachments**: Photo attachments for transactions
+
+## 🔧 Recent Bug Fixes & Improvements
+
+### Major Fixes Implemented
+- **✅ Dark Mode Visibility**: Fixed team member cards and toast notifications in dark mode
+- **✅ Theme Switching**: Consistent theme toggle functionality across all pages
+- **✅ Navigation Responsiveness**: Fixed hamburger menu behavior in light theme
+- **✅ Chart Interactions**: Improved hover detection and tooltip positioning
+- **✅ Header Positioning**: Changed from sticky to fixed positioning
+- **✅ Modal UX**: Centered buttons with proper spacing
+- **✅ Chart Theme Updates**: Charts now re-render immediately when switching themes
+- **✅ Input Enhancements**: 100-increment feature on all amount inputs including dynamic ones
+
+### Performance Optimizations
+- **Overflow Fix**: Added `overflow-x: hidden` to prevent horizontal scroll issues
+- **Efficient Rendering**: Optimized chart updates and DOM manipulations
+- **Smart Filtering**: Dynamic category filters based on existing transactions
+- **Debounced Search**: Reduced unnecessary API calls and renders
 
 ## 📝 Code Quality
 
-- Clean, readable code with comments
-- Consistent naming conventions
-- Modular architecture
-- Error handling
-- No external dependencies
-- Follows ES6+ best practices
+- **Clean Architecture**: Modular ES6 class-based structure
+- **Comprehensive Comments**: Beginner-friendly code documentation
+- **Consistent Naming**: Clear, descriptive variable and function names
+- **Error Handling**: Graceful handling of edge cases and user errors
+- **No External Dependencies**: Pure vanilla JavaScript implementation
+- **Modern Standards**: Follows ES6+ best practices and conventions
+- **Accessibility First**: WCAG compliant with proper ARIA labels
+- **Cross-browser Compatibility**: Works on all modern browsers
 
 ## 🤝 Contributing
 
@@ -301,13 +439,16 @@ Free to use for learning purposes.
 ## 📸 Screenshots
 
 ### Light Theme
-![Dashboard](screenshots/light-theme.png)
+<img width="1050" height="699" alt="Screenshot 2025-12-11 at 12 40 49 PM" src="https://github.com/user-attachments/assets/d962acd4-653d-4b64-a07f-721fe5a9992f" />
+
 
 ### Dark Theme
-![Dashboard Dark](screenshots/dark-theme.png)
+<img width="1059" height="695" alt="Screenshot 2025-12-11 at 12 40 20 PM" src="https://github.com/user-attachments/assets/aef11138-5efb-4e34-9579-8e65a046cd26" />
+
 
 ### Charts & Analytics
-![Charts](screenshots/charts.png)
+<img width="1002" height="458" alt="Screenshot 2025-12-11 at 12 41 16 PM" src="https://github.com/user-attachments/assets/6fe8bf4b-c34b-46e8-ad7f-6010695a498f" />
+
 
 ---
 

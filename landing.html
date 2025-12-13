@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Money Mate - Your Personal Finance Tracker. Take control of your finances with smart budgeting, expense tracking, and financial insights.">
+    <title>Money Mate - Smart Personal Finance Tracker</title>
+    
+    <!-- Authentication Guard -->
+    <script src="js/authGuard.js"></script>
+    <script>
+        // If user is already authenticated with valid remember me, skip to app
+        const guard = new AuthGuard();
+        if (guard.shouldSkipLanding()) {
+            window.location.href = 'index.html';
+        }
+    </script>
+    
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/theme.css">
+    <link rel="stylesheet" href="styles/animations.css">
+    <link rel="stylesheet" href="styles/landing.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body class="landing-page">
+    <!-- Skip to main content for accessibility -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <!-- Header -->
+    <header class="landing-header">
+        <div class="container">
+            <nav class="landing-nav">
+                <h1 class="logo">💰 Money Mate</h1>
+                <div class="nav-links">
+                    <a href="#features" class="nav-link">Features</a>
+                    <a href="#how-it-works" class="nav-link">How It Works</a>
+                    <a href="#testimonials" class="nav-link">Testimonials</a>
+                    <a href="about.html?from=landing" class="nav-link">About Us</a>
+                    <a href="contact.html?from=landing" class="nav-link">Contact Us</a>
+                </div>
+                <div class="nav-actions">
+                    <a href="login.html" class="btn btn-outline-white">Sign In</a>
+                    <a href="login.html#register" class="btn btn-primary">Get Started</a>
+                    <button id="theme-toggle" class="btn-icon" aria-label="Toggle dark mode">🌙</button>
+                </div>
+                <button class="hamburger" id="hamburger-menu" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main id="main-content">
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="container">
+                <div class="hero-content">
+                    <div class="hero-text">
+                        <h1 class="hero-title">
+                            Take Control of Your
+                            <span class="gradient-text">Financial Future</span>
+                        </h1>
+                        <p class="hero-description">
+                            Track expenses, manage budgets, and achieve your financial goals with Money Mate - 
+                            the smart, intuitive personal finance tracker designed for everyone.
+                        </p>
+                        <div class="hero-cta">
+                            <a href="login.html#register" class="btn btn-primary btn-lg">
+                                🚀 Start Free Today
+                            </a>
+                            <a href="#how-it-works" class="btn btn-outline btn-lg">
+                                📖 Learn More
+                            </a>
+                        </div>
+                        <div class="hero-stats">
+                            <div class="stat-item">
+                                <span class="stat-number">10K+</span>
+                                <span class="stat-label">Active Users</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number">₹50Cr+</span>
+                                <span class="stat-label">Tracked</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number">4.9★</span>
+                                <span class="stat-label">Rating</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hero-visual">
+                        <div class="dashboard-preview">
+                            <div class="preview-card card-1">
+                                <div class="card-icon">💰</div>
+                                <div class="card-content">
+                                    <span class="card-label">Total Balance</span>
+                                    <span class="card-value">₹45,250</span>
+                                </div>
+                            </div>
+                            <div class="preview-card card-2">
+                                <div class="card-icon">📊</div>
+                                <div class="card-content">
+                                    <span class="card-label">This Month</span>
+                                    <span class="card-value">₹12,480</span>
+                                </div>
+                            </div>
+                            <div class="preview-card card-3">
+                                <div class="card-icon">🎯</div>
+                                <div class="card-content">
+                                    <span class="card-label">Financial Score</span>
+                                    <span class="card-value">85/100</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="features-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Powerful Features for Complete Financial Control</h2>
+                    <p class="section-description">Everything you need to manage your money effectively</p>
+                </div>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">📊</div>
+                        <h3 class="feature-title">Smart Expense Tracking</h3>
+                        <p class="feature-description">
+                            Automatically categorize and track all your expenses with intelligent insights and real-time updates.
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">💰</div>
+                        <h3 class="feature-title">Budget Management</h3>
+                        <p class="feature-description">
+                            Set custom budgets for different categories and get alerts when you're approaching your limits.
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📈</div>
+                        <h3 class="feature-title">Visual Analytics</h3>
+                        <p class="feature-description">
+                            Beautiful charts and graphs help you understand your spending patterns and financial trends.
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🎯</div>
+                        <h3 class="feature-title">Financial Health Score</h3>
+                        <p class="feature-description">
+                            Get a comprehensive score based on your spending habits, savings, and financial behavior.
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔄</div>
+                        <h3 class="feature-title">Recurring Transactions</h3>
+                        <p class="feature-description">
+                            Set up recurring income and expenses to automate your financial tracking effortlessly.
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📱</div>
+                        <h3 class="feature-title">Multi-Device Sync</h3>
+                        <p class="feature-description">
+                            Access your financial data anywhere, anytime with seamless cloud synchronization.
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔒</div>
+                        <h3 class="feature-title">Secure & Private</h3>
+                        <p class="feature-description">
+                            Your data is encrypted and stored securely. We never share your information with third parties.
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📤</div>
+                        <h3 class="feature-title">Export & Reports</h3>
+                        <p class="feature-description">
+                            Export your data in CSV or JSON format for tax filing, accounting, or personal records.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works Section -->
+        <section id="how-it-works" class="how-it-works-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">How Money Mate Works</h2>
+                    <p class="section-description">Get started in three simple steps</p>
+                </div>
+                <div class="steps-container">
+                    <div class="step-card">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h3 class="step-title">Create Your Account</h3>
+                            <p class="step-description">
+                                Sign up in seconds with just your email. No credit card required to get started.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="step-connector"></div>
+                    <div class="step-card">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h3 class="step-title">Add Your Transactions</h3>
+                            <p class="step-description">
+                                Record your income and expenses with our intuitive interface. Set up budgets and categories.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="step-connector"></div>
+                    <div class="step-card">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h3 class="step-title">Track & Optimize</h3>
+                            <p class="step-description">
+                                Monitor your spending, get insights, and make smarter financial decisions every day.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials Section -->
+        <section id="testimonials" class="testimonials-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">What Our Users Say</h2>
+                    <p class="section-description">Join thousands of satisfied users managing their finances better</p>
+                </div>
+                <div class="testimonials-grid">
+                    <div class="testimonial-card">
+                        <div class="testimonial-rating">⭐⭐⭐⭐⭐</div>
+                        <p class="testimonial-text">
+                            "Money Mate has completely transformed how I manage my finances. The visual insights are incredible!"
+                        </p>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">👨‍💼</div>
+                            <div class="author-info">
+                                <span class="author-name">Rajesh Kumar</span>
+                                <span class="author-role">Business Owner</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="testimonial-rating">⭐⭐⭐⭐⭐</div>
+                        <p class="testimonial-text">
+                            "As a student, budgeting was always hard. Money Mate makes it so easy to track my expenses and save money."
+                        </p>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">👩‍🎓</div>
+                            <div class="author-info">
+                                <span class="author-name">Priya Sharma</span>
+                                <span class="author-role">Student</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="testimonial-rating">⭐⭐⭐⭐⭐</div>
+                        <p class="testimonial-text">
+                            "The financial health score feature is genius! It motivates me to make better spending decisions daily."
+                        </p>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">👨‍💻</div>
+                            <div class="author-info">
+                                <span class="author-name">Amit Patel</span>
+                                <span class="author-role">Software Engineer</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="cta-section">
+            <div class="container">
+                <div class="cta-content">
+                    <h2 class="cta-title">Ready to Take Control of Your Finances?</h2>
+                    <p class="cta-description">
+                        Join thousands of users who are already managing their money smarter with Money Mate.
+                        Start your journey to financial freedom today!
+                    </p>
+                    <div class="cta-buttons">
+                        <a href="login.html#register" class="btn btn-primary btn-lg">
+                            🚀 Get Started Free
+                        </a>
+                        <a href="login.html" class="btn btn-outline-white btn-lg">
+                            🔐 Sign In
+                        </a>
+                    </div>
+                    <p class="cta-note">✨ No credit card required • Free forever • Cancel anytime</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="landing-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h3 class="footer-title">💰 Money Mate</h3>
+                    <p class="footer-description">
+                        Your trusted companion for smart personal finance management.
+                        Track, budget, and grow your wealth effortlessly.
+                    </p>
+                </div>
+                <div class="footer-col">
+                    <h4 class="footer-heading">Product</h4>
+                    <ul class="footer-links">
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#how-it-works">How It Works</a></li>
+                        <li><a href="login.html">Sign In</a></li>
+                        <li><a href="login.html#register">Sign Up</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4 class="footer-heading">Company</h4>
+                    <ul class="footer-links">
+                        <li><a href="about.html?from=landing">About Us</a></li>
+                        <li><a href="contact.html?from=landing">Contact Us</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4 class="footer-heading">Connect</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Twitter</a></li>
+                        <li><a href="#">LinkedIn</a></li>
+                        <li><a href="#">Facebook</a></li>
+                        <li><a href="#">Instagram</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Money Mate. All rights reserved. Built with ❤️ for better financial futures.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <!-- Scripts -->
+    <script src="js/landing.js"></script>
+</body>
+</html>

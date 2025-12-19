@@ -1,0 +1,90 @@
+/* ===== MICRO-ANIMATIONS FOR ENHANCED UX ===== */
+
+/* Fade In Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* Slide Up Animation */
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Pulse Animation */
+@keyframes pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+/* Apply animations to sections */
+.app-section {
+    animation: fadeIn 0.5s ease-out;
+}
+
+.balance-card,
+.insight-card,
+.budget-item,
+.transaction-item,
+.team-card {
+    animation: slideUp 0.6s ease-out;
+    animation-fill-mode: both;
+}
+
+/* Staggered animation delays for balance cards */
+.balance-card:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.balance-card:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.balance-card:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+/* Smooth scroll behavior */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Focus visible for better accessibility */
+*:focus-visible {
+    outline: 3px solid var(--primary);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+/* Reduced motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}

@@ -3,11 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Personal Finance Tracker - Manage your income, expenses, and budgets">
     <title>Finance Tracker - Manage Your Money</title>
-     <link rel="stylesheet" href="styles/main.css">
-     <link rel="stylesheet" href="styles/theme.css">
+    
+    <!-- Authentication Guard - Must load first -->
+    <script src="js/authGuard.js"></script>
+    <script>
+        // Protect this page - redirect to landing if not authenticated
+        const guard = new AuthGuard();
+        guard.protectPage('index.html');
+    </script>
+    
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/theme.css">
+    <link rel="stylesheet" href="styles/animations.css">
+    <link rel="stylesheet" href="styles/financialHealth.css">
 </head>
 <body>
+    <!-- Skip to main content for accessibility -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
 
     <!-- Header -->
     <header class="header">
@@ -15,10 +29,18 @@
             <h1 class="logo">💰 Money Mate</h1>
             <div class="header-right">
                 <nav class="nav" id="nav-menu" role="navigation">
-                    <a href="index.html" class="nav-link">Home</a>
-                    <a href="about.html" class="nav-link">About Us</a>
-                    <a href="contact.html" class="nav-link">Contact Us</a>
+                    <a href="#" class="nav-link active" data-section="dashboard">🏠 Dashboard</a>
+                    <a href="#" class="nav-link" data-section="add-transaction">➕ Add Transaction</a>
+                    <a href="#" class="nav-link" data-section="history">📊 History</a>
+                    <a href="#" class="nav-link" data-section="budgets">💰 Budgets</a>
+                    <a href="#" class="nav-link" data-section="settings">⚙️ Settings</a>
                 </nav>
+                
+                <!-- User Profile Section - Phase 1 -->
+                <div id="user-profile" class="user-profile">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+                
                 <button id="theme-toggle" class="btn-icon" aria-label="Toggle dark mode">
                     🌙
                 </button>
@@ -31,174 +53,364 @@
         </div>
     </header>
 
-     <!-- Main Content -->
+    <!-- Main Content -->
     <main id="main-content" class="main-content">
         <div class="container">
-            
-            <!-- Balance Summary -->
-            <section class="balance-section" aria-labelledby="balance-heading">
-                <h2 id="balance-heading" class="sr-only">Account Balance</h2>
-                <div class="balance-cards">
-                    <div class="balance-card balance-card--total">
-                        <span class="balance-label">Total Balance</span>
-                        <span class="balance-amount" id="total-balance">₹0.00</span>
-                    </div>
-                    <div class="balance-card balance-card--income">
-                        <span class="balance-label">Income</span>
-                        <span class="balance-amount" id="total-income">₹0.00</span>
-                    </div>
-                    <div class="balance-card balance-card--expense">
-                        <span class="balance-label">Expenses</span>
-                        <span class="balance-amount" id="total-expense">₹0.00</span>
-                    </div>
+            <!-- Dashboard Section -->
+            <div id="dashboard-section" class="app-section active">
+                <!-- Financial Overview & Health Score - Side by Side -->
+                <div class="dashboard-top-grid">
+                    <!-- Balance Summary - 40% -->
+                    <section class="balance-section" aria-labelledby="balance-heading">
+                        <h2 id="balance-heading">💰 Financial Overview</h2>
+                        <div class="balance-cards">
+                            <div class="balance-card balance-card--total">
+                                <span class="balance-label">Total Balance</span>
+                                <span class="balance-amount" id="total-balance">₹0.00</span>
+                            </div>
+                            <div class="balance-card balance-card--income">
+                                <span class="balance-label">Income</span>
+                                <span class="balance-amount" id="total-income">₹0.00</span>
+                            </div>
+                            <div class="balance-card balance-card--expense">
+                                <span class="balance-label">Expenses</span>
+                                <span class="balance-amount" id="total-expense">₹0.00</span>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Financial Health Score - 60% -->
+                    <section class="financial-health-section" aria-labelledby="health-score-heading">
+                        <div class="health-score-card">
+                            <div class="health-score-header">
+                                <h2 id="health-score-heading" class="health-score-title">🎯 Financial Health Score</h2>
+                                <div class="health-score-grade" id="health-grade">-</div>
+                            </div>
+                            
+                            <div class="health-score-main">
+                                <!-- Circular Progress -->
+                                <div class="score-circle-container">
+                                    <div class="score-circle">
+                                        <svg width="160" height="160">
+                                            <circle class="score-circle-bg" cx="80" cy="80" r="72"></circle>
+                                            <circle class="score-circle-progress" id="score-progress-circle" 
+                                                    cx="80" cy="80" r="72" 
+                                                    stroke-dasharray="452.39" 
+                                                    stroke-dashoffset="452.39"></circle>
+                                        </svg>
+                                        <div class="score-value">
+                                            <div class="score-text-container">
+                                                <div class="score-number" id="health-score-number">0</div>
+                                                <div class="score-label">out of 100</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p class="score-message" id="health-score-message">Loading...</p>
+                                </div>
+                                
+                                <!-- Score Breakdown -->
+                                <div class="score-breakdown" id="score-breakdown">
+                                    <!-- Breakdown items will be inserted here by JavaScript -->
+                                </div>
+                            </div>
+                            
+                            <!-- Improvement Tips -->
+                            <div class="score-tips" id="score-tips" style="display: none;">
+                                <h4>💡 Tips to Improve Your Score</h4>
+                                <div class="tips-list" id="tips-list">
+                                    <!-- Tips will be inserted here by JavaScript -->
+                                </div>
+                            </div>
+                        </div>
+                    </section>
                 </div>
-            </section>
 
-            <!-- Add Transaction Form -->
-            <section class="form-section" aria-labelledby="form-heading">
-                <h2 id="form-heading">Add Transaction</h2>
-                <form id="transaction-form" class="transaction-form">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="transaction-type">Type</label>
-                            <select id="transaction-type" name="type" required>
-                                <option value="income">Income</option>
-                                <option value="expense">Expense</option>
-                            </select>
+                <!-- Insights Section -->
+                <section class="insights-section" aria-labelledby="insights-heading">
+                    <h3 id="insights-heading">📈 Spending Insights</h3>
+                    <div class="insights-grid">
+                        <div class="insight-card">
+                            <h4>Category Breakdown</h4>
+                            <canvas id="category-chart" aria-label="Pie chart showing expense distribution by category"></canvas>
                         </div>
-                        
+                        <div class="insight-card">
+                            <h4>Spending Trend</h4>
+                            <canvas id="trend-chart" aria-label="Line chart showing spending over time"></canvas>
+                        </div>
+                        <div class="insight-card">
+                            <h4>Budget vs Spending</h4>
+                            <canvas id="budget-chart" aria-label="Double bar chart comparing budget set vs actual spending"></canvas>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Quick Actions -->
+                <section class="quick-actions">
+                    <h3>⚡ Quick Actions</h3>
+                    <div class="action-buttons">
+                        <button class="action-btn" data-section="add-transaction">
+                            <span class="action-icon">➕</span>
+                            <span class="action-text">Add Transaction</span>
+                        </button>
+                        <button class="action-btn" data-section="history">
+                            <span class="action-icon">📊</span>
+                            <span class="action-text">View History</span>
+                        </button>
+                        <button class="action-btn" data-section="budgets">
+                            <span class="action-icon">💰</span>
+                            <span class="action-text">Manage Budgets</span>
+                        </button>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Add Transaction Section -->
+            <div id="add-transaction-section" class="app-section">
+                <section class="form-section" aria-labelledby="form-heading">
+                    <h2 id="form-heading">➕ Add New Transaction</h2>
+                    <p class="section-description">Record your income and expenses to track your financial activity.</p>
+                    
+                    <form id="transaction-form" class="transaction-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="transaction-type">Type</label>
+                                <select id="transaction-type" name="type" required>
+                                    <option value="income">💰 Income</option>
+                                    <option value="expense">💸 Expense</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="transaction-amount">Amount (₹)</label>
+                                <input 
+                                    type="number" 
+                                    id="transaction-amount" 
+                                    name="amount" 
+                                    placeholder="0.00" 
+                                    step="0.01" 
+                                    min="0.01"
+                                    required
+                                    aria-describedby="amount-help"
+                                >
+                                <small id="amount-help" class="form-help">Enter amount in rupees</small>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="transaction-category">Category</label>
+                                <select id="transaction-category" name="category" required>
+                                    <!-- Options will be populated dynamically based on type -->
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="transaction-date">Date</label>
+                                <input 
+                                    type="date" 
+                                    id="transaction-date" 
+                                    name="date" 
+                                    required
+                                    max=""
+                                >
+                            </div>
+                        </div>
+
                         <div class="form-group">
-                            <label for="transaction-amount">Amount (₹)</label>
+                            <label for="transaction-description">Description</label>
                             <input 
-                                type="number" 
-                                id="transaction-amount" 
-                                name="amount" 
-                                placeholder="0.00" 
-                                step="0.01" 
-                                min="0.01"
-                                required
-                                aria-describedby="amount-help"
+                                type="text" 
+                                id="transaction-description" 
+                                name="description" 
+                                placeholder="e.g., Lunch at cafe, Monthly salary, Grocery shopping"
+                                maxlength="100"
                             >
-                            <small id="amount-help" class="form-help">Enter amount in rupees</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="transaction-recurring" name="recurring">
+                                <span>🔄 Recurring monthly transaction</span>
+                            </label>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary" id="transaction-submit-btn">
+                                <span>💾 Add Transaction</span>
+                            </button>
+                            <button type="button" id="cancel-edit-btn" class="btn btn-secondary" style="display: none;">
+                                ❌ Cancel
+                            </button>
+                            <button type="button" class="btn btn-outline" data-section="dashboard">
+                                🏠 Back to Dashboard
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Undo/Redo Actions -->
+                    <div class="undo-redo-section">
+                        <h3>⚡ Quick Actions</h3>
+                        <div class="undo-redo-buttons">
+                            <button type="button" id="undo-btn" class="btn btn-secondary" disabled>
+                                ↶ Undo Last Action
+                            </button>
+                            <button type="button" id="redo-btn" class="btn btn-secondary" disabled>
+                                ↷ Redo Action
+                            </button>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- History Section -->
+            <div id="history-section" class="app-section">
+                <section class="transactions-section" aria-labelledby="transactions-heading">
+                    <div class="section-header">
+                        <h2 id="transactions-heading">📊 Transaction History</h2>
+                        <p class="section-description">View, search, and manage all your financial transactions.</p>
+                        <div class="section-actions">
+                            <button id="select-mode-btn" class="btn btn-sm">✅ Select</button>
+                            <button id="select-all-btn" class="btn btn-sm btn-secondary" style="display: none;">📋 Select All</button>
+                            <button id="delete-selected-btn" class="btn btn-sm btn-danger" style="display: none;">🗑️ Delete Selected</button>
+                            <button id="delete-all-btn" class="btn btn-sm btn-danger">🗑️ Delete All</button>
+                            <button id="export-json-btn" class="btn btn-sm">📄 Export JSON</button>
+                            <button id="export-csv-btn" class="btn btn-sm">📊 Export CSV</button>
                         </div>
                     </div>
 
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="transaction-category">Category</label>
-                            <select id="transaction-category" name="category" required>
-                                <!-- Options will be populated dynamically based on type -->
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="transaction-date">Date</label>
-                            <input 
-                                type="date" 
-                                id="transaction-date" 
-                                name="date" 
-                                required
-                                max=""
-                            >
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="transaction-description">Description</label>
+                    <!-- Search and Filter -->
+                    <div class="filters">
                         <input 
-                            type="text" 
-                            id="transaction-description" 
-                            name="description" 
-                            placeholder="e.g., Lunch at cafe"
-                            maxlength="100"
+                            type="search"
+                            id="search-input" 
+                            class="search-input" 
+                            placeholder="🔍 Search transactions..."
+                            aria-label="Search transactions"
                         >
+                        <select id="filter-type" class="filter-select" aria-label="Filter by type">
+                            <option value="all">All Types</option>
+                            <option value="income">💰 Income</option>
+                            <option value="expense">💸 Expense</option>
+                        </select>
+                        <select id="filter-category" class="filter-select" aria-label="Filter by category">
+                            <option value="all">All Categories</option>
+                        </select>
+                        <select id="sort-by" class="filter-select" aria-label="Sort by">
+                            <option value="date-desc">📅 Date (Newest)</option>
+                            <option value="date-asc">📅 Date (Oldest)</option>
+                            <option value="amount-desc">💰 Amount (High to Low)</option>
+                            <option value="amount-asc">💰 Amount (Low to High)</option>
+                        </select>
                     </div>
 
-                    <div class="form-group">
-                        <label class="checkbox-label">
-                            <input type="checkbox" id="transaction-recurring" name="recurring">
-                            <span>Recurring monthly transaction</span>
-                        </label>
-                    </div>
+                    <div id="transactions-list" class="transactions-list" role="list"></div>
+                    
+                    <!-- Pagination -->
+                    <div id="pagination" class="pagination"></div>
 
-                    <div class="form-actions">
-                        <button type="submit" class="btn btn-primary" id="transaction-submit-btn">Add Transaction</button>
-                        <button type="button" id="cancel-edit-btn" class="btn btn-secondary" style="display: none;">Cancel</button>
-                        <button type="button" id="undo-btn" class="btn btn-secondary" disabled>
-                            ↶ Undo
+                    <!-- Quick Actions -->
+                    <div class="history-actions">
+                        <button class="btn btn-outline" data-section="add-transaction">
+                            ➕ Add New Transaction
                         </button>
-                        <button type="button" id="redo-btn" class="btn btn-secondary" disabled>
-                            ↷ Redo
+                        <button class="btn btn-outline" data-section="dashboard">
+                            🏠 Back to Dashboard
                         </button>
                     </div>
-                </form>
-            </section>
-            <!-- Budget Section -->
-            <section class="budget-section" aria-labelledby="budget-heading">
-                <h2 id="budget-heading">Monthly Budgets</h2>
-                <div id="budget-alerts" class="budget-alerts" role="alert" aria-live="polite"></div>
-                <div id="budget-list" class="budget-list"></div>
-                <button id="add-budget-btn" class="btn btn-outline">+ Add Budget</button>
-            </section>
+                </section>
+            </div>
 
-            <!-- Insights Section -->
-            <section class="insights-section" aria-labelledby="insights-heading">
-                <h2 id="insights-heading">Spending Insights</h2>
-                <div class="insights-grid">
-                    <div class="insight-card">
-                        <h3>Category Breakdown</h3>
-                        <canvas id="category-chart" aria-label="Pie chart showing expense distribution by category"></canvas>
+            <!-- Budgets Section -->
+            <div id="budgets-section" class="app-section">
+                <section class="budget-section" aria-labelledby="budget-heading">
+                    <h2 id="budget-heading">💰 Budget Management</h2>
+                    <p class="section-description">Set monthly spending limits and track your budget progress.</p>
+                    
+                    <div id="budget-alerts" class="budget-alerts" role="alert" aria-live="polite"></div>
+                    <div id="budget-list" class="budget-list"></div>
+                    
+                    <div class="budget-actions">
+                        <button id="add-budget-btn" class="btn btn-primary">➕ Add New Budget</button>
+                        <button class="btn btn-outline" data-section="dashboard">
+                            🏠 Back to Dashboard
+                        </button>
                     </div>
-                    <div class="insight-card">
-                        <h3>Spending Trend</h3>
-                        <canvas id="trend-chart" aria-label="Line chart showing spending over time"></canvas>
+                </section>
+            </div>
+
+            <!-- Settings Section -->
+            <div id="settings-section" class="app-section">
+                <section class="settings-section" aria-labelledby="settings-heading">
+                    <h2 id="settings-heading">⚙️ Settings & Preferences</h2>
+                    <p class="section-description">Manage your account settings, preferences, and data.</p>
+                    
+                    <div class="settings-grid">
+                        <!-- Account Settings -->
+                        <div class="settings-card">
+                            <h3>👤 Account Settings</h3>
+                            <div class="settings-actions">
+                                <button class="btn btn-outline" onclick="app.showUserMenu()">
+                                    View Profile
+                                </button>
+                                <button class="btn btn-outline" onclick="app.editProfile()">
+                                    Edit Profile
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Data Management -->
+                        <div class="settings-card">
+                            <h3>💾 Data Management</h3>
+                            <div class="settings-actions">
+                                <button class="btn btn-outline" onclick="app.showImportModal()">
+                                    📥 Import Data
+                                </button>
+                                <button class="btn btn-outline" onclick="app.handleExportJSON()">
+                                    📤 Export Data (JSON)
+                                </button>
+                                <button class="btn btn-outline" onclick="app.handleExportCSV()">
+                                    📤 Export Data (CSV)
+                                </button>
+                                <button class="btn btn-danger" onclick="app.showDataClearConfirm()">
+                                    🗑️ Clear All Data
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Theme Settings -->
+                        <div class="settings-card">
+                            <h3>🎨 Appearance</h3>
+                            <div class="settings-actions">
+                                <button class="btn btn-outline" onclick="app.theme.toggle()">
+                                    Toggle Theme
+                                </button>
+                                <div class="theme-info">
+                                    Current theme: <span id="current-theme">Light</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Account Actions -->
+                        <div class="settings-card" id="account-actions-card">
+                            <h3>🚪 Account Actions</h3>
+                            <div class="settings-actions">
+                                <button class="btn btn-secondary" onclick="app.logout()">
+                                    Logout
+                                </button>
+                                <button class="btn btn-danger" onclick="app.showDeleteAccountConfirm()" id="delete-account-btn">
+                                    Delete Account
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </section>
-
-            <!-- Transactions List -->
-            <section class="transactions-section" aria-labelledby="transactions-heading">
-                <div class="section-header">
-                    <h2 id="transactions-heading">Transaction History</h2>
-                    <div class="section-actions">
-                        <button id="select-mode-btn" class="btn btn-sm">Select</button>
-                        <button id="select-all-btn" class="btn btn-sm btn-secondary" style="display: none;">Select All</button>
-                        <button id="delete-selected-btn" class="btn btn-sm btn-danger" style="display: none;">Delete Selected</button>
-                        <button id="delete-all-btn" class="btn btn-sm btn-danger">Delete All</button>
-                        <button id="export-json-btn" class="btn btn-sm">Export JSON</button>
-                        <button id="export-csv-btn" class="btn btn-sm">Export CSV</button>
+                    
+                    <div class="settings-footer">
+                        <button class="btn btn-primary" data-section="dashboard">
+                            🏠 Back to Dashboard
+                        </button>
                     </div>
-                </div>
-
-                <!-- Search and Filter -->
-                <div class="filters">
-                    <input 
-                        type="search" 
-                        id="search-input" 
-                        class="search-input" 
-                        placeholder="Search transactions..."
-                        aria-label="Search transactions"
-                    >
-                    <select id="filter-type" class="filter-select" aria-label="Filter by type">
-                        <option value="all">All Types</option>
-                        <option value="income">Income</option>
-                        <option value="expense">Expense</option>
-                    </select>
-                    <select id="filter-category" class="filter-select" aria-label="Filter by category">
-                        <option value="all">All Categories</option>
-                    </select>
-                    <select id="sort-by" class="filter-select" aria-label="Sort by">
-                        <option value="date-desc">Date (Newest)</option>
-                        <option value="date-asc">Date (Oldest)</option>
-                        <option value="amount-desc">Amount (High to Low)</option>
-                        <option value="amount-asc">Amount (Low to High)</option>
-                    </select>
-                </div>
-
-                <div id="transactions-list" class="transactions-list" role="list"></div>
-                <!-- Pagination -->
-                <div id="pagination" class="pagination"></div>
-            </section>
+                </section>
+            </div>
 
         </div>
     </main>
@@ -206,9 +418,16 @@
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <p>&copy; 2025 Finance Tracker. Built with ❤️ using Vanilla JS</p>
+            <div class="footer-content">
+                <div class="footer-links">
+                    <a href="about.html" class="footer-link">About Us</a>
+                    <a href="contact.html" class="footer-link">Contact Us</a>
+                </div>
+                <p class="footer-text">&copy; 2026 Finance Tracker. Built with ❤️ using Vanilla JS</p>
+            </div>
         </div>
     </footer>
+
     <!-- Budget Modal -->
     <div id="budget-modal" class="modal" role="dialog" aria-labelledby="modal-title" aria-hidden="true">
         <div class="modal-content">
@@ -245,7 +464,7 @@
     <div id="confirm-modal" class="modal" role="dialog" aria-labelledby="confirm-title" aria-hidden="true">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 id="confirm-title">Confirm Delete</h3>
+                <h3 id="confirm-title">Confirm Action</h3>
                 <button class="modal-close confirm-cancel" aria-label="Close modal">&times;</button>
             </div>
             <div class="modal-body">
@@ -258,11 +477,44 @@
         </div>
     </div>
 
-        <!-- Toast Notification -->
+    <!-- Import Data Modal -->
+    <div id="import-modal" class="modal" role="dialog" aria-labelledby="import-title" aria-hidden="true">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="import-title">📥 Import Data</h3>
+                <button class="modal-close" aria-label="Close modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Import your financial data from a JSON file. This will add to your existing data.</p>
+                
+                <div class="form-group">
+                    <label for="import-file">Select JSON File</label>
+                    <input type="file" id="import-file" accept=".json" class="file-input">
+                    <small class="form-help">Only JSON files exported from Money Mate are supported</small>
+                </div>
+                
+                <div class="import-options">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="import-merge" checked>
+                        <span>Merge with existing data (recommended)</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="import-replace">
+                        <span>Replace all existing data</span>
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="import-btn" class="btn btn-primary" disabled>Import Data</button>
+                <button class="btn btn-secondary modal-cancel">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
     <!-- Scripts -->
     <script type="module" src="js/app.js"></script>
-                
 </body>
 </html>

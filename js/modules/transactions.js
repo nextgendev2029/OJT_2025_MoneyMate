@@ -1,3 +1,4 @@
+// Transaction Manager - Handles all transaction operations with IndexedDB
 export class TransactionManager {
     constructor(storage) {
         this.storage = storage;
@@ -5,34 +6,56 @@ export class TransactionManager {
         this.history = [];
         this.historyIndex = -1;
         this.maxHistory = 20;
+        this.initialized = false;
     }
 
-    loadFromStorage() {
-        this.transactions = this.storage.get('transactions') || [];
-        this.saveHistory();
+    async init() {
+        if (!this.initialized) {
+            await this.loadFromStorage();
+            this.initialized = true;
+        }
     }
 
-    saveToStorage() {
-        this.storage.set('transactions', this.transactions);
+    async loadFromStorage() {
+        try {
+            this.transactions = await this.storage.get('transactions') || [];
+            await this.saveHistory();
+            console.log(`Loaded ${this.transactions.length} transactions from storage`);
+        } catch (error) {
+            console.error('Error loading transactions:', error);
+            this.transactions = [];
+        }
     }
 
-    add(transaction) {
+    async saveToStorage() {
+        try {
+            await this.storage.set('transactions', this.transactions);
+        } catch (error) {
+            console.error('Error saving transactions:', error);
+        }
+    }
+
+    async add(transaction) {
+        await this.init();
         this.transactions.push(transaction);
-        this.saveToStorage();
-        this.saveHistory();
+        await this.saveToStorage();
+        await this.saveHistory();
     }
 
-    delete(timestamp) {
+    async delete(timestamp) {
+        await this.init();
         this.transactions = this.transactions.filter(t => t.timestamp !== timestamp);
-        this.saveToStorage();
-        this.saveHistory();
+        await this.saveToStorage();
+        await this.saveHistory();
     }
 
-    getAll() {
+    async getAll() {
+        await this.init();
         return [...this.transactions];
     }
 
-    getStats() {
+    async getStats() {
+        await this.init();
         const income = this.transactions
             .filter(t => t.type === 'income')
             .reduce((sum, t) => sum + t.amount, 0);
@@ -48,8 +71,8 @@ export class TransactionManager {
         };
     }
 
-    
-    getSpendingByCategory() {
+    async getSpendingByCategory() {
+        await this.init();
         const spending = {};
         this.transactions
             .filter(t => t.type === 'expense')
@@ -59,7 +82,8 @@ export class TransactionManager {
         return spending;
     }
 
-    getSpendingTrend() {
+    async getSpendingTrend() {
+        await this.init();
         const last7Days = [];
         const today = new Date();
         
@@ -81,11 +105,12 @@ export class TransactionManager {
         return last7Days;
     }
 
-    processRecurring() {
+    async processRecurring() {
+        await this.init();
         const today = new Date().toISOString().split('T')[0];
         const recurringTransactions = this.transactions.filter(t => t.recurring);
         
-        recurringTransactions.forEach(t => {
+        for (const t of recurringTransactions) {
             const lastDate = new Date(t.date);
             const nextDate = new Date(lastDate);
             nextDate.setMonth(nextDate.getMonth() + 1);
@@ -94,18 +119,22 @@ export class TransactionManager {
                 const newTransaction = {
                     ...t,
                     date: today,
-                    timestamp: Date.now() + Math.random()
+                    timestamp: Date.now() + Math.random() // Ensure unique timestamp
                 };
-                this.add(newTransaction);
+                await this.add(newTransaction);
             }
-        });
+        }
     }
 
     // Undo/Redo functionality
-    saveHistory() {
+    async saveHistory() {
+        // Remove any future history if we're not at the end
         this.history = this.history.slice(0, this.historyIndex + 1);
+        
+        // Add current state
         this.history.push(JSON.stringify(this.transactions));
         
+        // Limit history size
         if (this.history.length > this.maxHistory) {
             this.history.shift();
         } else {
@@ -113,21 +142,21 @@ export class TransactionManager {
         }
     }
 
-    undo(){
+    async undo() {
         if (this.canUndo()) {
             this.historyIndex--;
             this.transactions = JSON.parse(this.history[this.historyIndex]);
-            this.saveToStorage();
+            await this.saveToStorage();
             return true;
         }
         return false;
     }
 
-    redo(){
+    async redo() {
         if (this.canRedo()) {
             this.historyIndex++;
             this.transactions = JSON.parse(this.history[this.historyIndex]);
-            this.saveToStorage();
+            await this.saveToStorage();
             return true;
         }
         return false;

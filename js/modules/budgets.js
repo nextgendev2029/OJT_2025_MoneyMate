@@ -1,39 +1,61 @@
-// Budget Manager - Handles budget operations
+// Budget Manager - Handles budget operations with IndexedDB
 export class BudgetManager {
     constructor(storage) {
         this.storage = storage;
         this.budgets = {};
+        this.initialized = false;
     }
 
-    loadFromStorage() {
-        this.budgets = this.storage.get('budgets') || {};
+    async init() {
+        if (!this.initialized) {
+            await this.loadFromStorage();
+            this.initialized = true;
+        }
     }
 
-    saveToStorage() {
-        this.storage.set('budgets', this.budgets);
+    async loadFromStorage() {
+        try {
+            this.budgets = await this.storage.get('budgets') || {};
+            console.log(`Loaded ${Object.keys(this.budgets).length} budgets from storage`);
+        } catch (error) {
+            console.error('Error loading budgets:', error);
+            this.budgets = {};
+        }
     }
 
-    set(category, limit) {
+    async saveToStorage() {
+        try {
+            await this.storage.set('budgets', this.budgets);
+        } catch (error) {
+            console.error('Error saving budgets:', error);
+        }
+    }
+
+    async set(category, limit) {
+        await this.init();
         this.budgets[category] = limit;
-        this.saveToStorage();
+        await this.saveToStorage();
     }
 
-    get(category) {
+    async get(category) {
+        await this.init();
         return this.budgets[category] || null;
     }
 
-    
-    getAll() {
+    async getAll() {
+        await this.init();
         return { ...this.budgets };
     }
 
-    delete(category) {
+    async delete(category) {
+        await this.init();
         delete this.budgets[category];
-        this.saveToStorage();
+        await this.saveToStorage();
     }
 
-    clear() {
+    async clear() {
+        await this.init();
         this.budgets = {};
-        this.saveToStorage();
+        await this.saveToStorage();
     }
 }

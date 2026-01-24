@@ -17,7 +17,6 @@ export class ThemeManager {
         return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     }
 
-    
     applyTheme(theme) {
         document.documentElement.setAttribute('data-theme', theme);
         this.themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';

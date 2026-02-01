@@ -1,16 +1,62 @@
-/* Dark Theme */
-[data-theme="dark"] {
-    --primary: #818cf8;
-    --primary-dark: #6366f1;
+/* Dark Theme - Support both class and data-attribute */
+[data-theme="dark"],
+.dark-theme {
+    --primary: #22d3ee;
+    --primary-dark: #06b6d4;
     --success: #34d399;
     --danger: #f87171;
     --warning: #fbbf24;
-    --bg-primary: #1f2937;
-    --bg-secondary: #111827;
-    --text-primary: #f9fafb;
-    --text-secondary: #9ca3af;
-    --border: #374151;
-    --shadow: rgba(0, 0, 0, 0.3);
+    --bg-primary: rgba(15, 23, 42, 0.95);
+    --bg-secondary: rgba(30, 41, 59, 0.95);
+    --text-primary: #f1f5f9;
+    --text-secondary: #cbd5e1;
+    --border: rgba(71, 85, 105, 0.5);
+    --shadow: rgba(0, 0, 0, 0.5);
+}
+
+/* Dark theme background */
+.dark-theme {
+    background: linear-gradient(135deg,
+            #0f172a 0%,
+            #1e293b 20%,
+            #334155 40%,
+            #1e293b 60%,
+            #0f172a 80%,
+            #1e293b 100%) !important;
+}
+
+.dark-theme::before {
+    opacity: 0.03 !important;
+}
+
+/* Dark theme for landing page sections */
+.dark-theme .landing-header {
+    background: rgba(15, 23, 42, 0.95) !important;
+    border-bottom-color: rgba(71, 85, 105, 0.3) !important;
+}
+
+.dark-theme section,
+.dark-theme .feature-card,
+.dark-theme .step-card,
+.dark-theme .testimonial-card,
+.dark-theme .preview-card {
+    background: rgba(30, 41, 59, 0.8) !important;
+    border-color: rgba(71, 85, 105, 0.3) !important;
+}
+
+.dark-theme .features-section,
+.dark-theme .testimonials-section {
+    background: rgba(15, 23, 42, 0.5) !important;
+}
+
+.dark-theme .btn-outline-white {
+    border-color: rgba(203, 213, 225, 0.3) !important;
+    color: var(--text-primary) !important;
+}
+
+.dark-theme .btn-outline-white:hover {
+    border-color: var(--primary) !important;
+    background: rgba(34, 211, 238, 0.1) !important;
 }
 
 /* Smooth theme transition */

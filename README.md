@@ -439,16 +439,13 @@ Free to use for learning purposes.
 ## 📸 Screenshots
 
 ### Light Theme
-<img width="1050" height="699" alt="Screenshot 2025-12-11 at 12 40 49 PM" src="https://github.com/user-attachments/assets/d962acd4-653d-4b64-a07f-721fe5a9992f" />
-
+![Dashboard](screenshots/light-theme.png)
 
 ### Dark Theme
-<img width="1059" height="695" alt="Screenshot 2025-12-11 at 12 40 20 PM" src="https://github.com/user-attachments/assets/aef11138-5efb-4e34-9579-8e65a046cd26" />
-
+![Dashboard Dark](screenshots/dark-theme.png)
 
 ### Charts & Analytics
-<img width="1002" height="458" alt="Screenshot 2025-12-11 at 12 41 16 PM" src="https://github.com/user-attachments/assets/6fe8bf4b-c34b-46e8-ad7f-6010695a498f" />
-
+![Charts](screenshots/charts.png)
 
 ---
 

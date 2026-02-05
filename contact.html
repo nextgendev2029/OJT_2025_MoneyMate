@@ -4,31 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact Us - Money Mate</title>
+    
+    <!-- Authentication Guard -->
+    <script src="js/authGuard.js"></script>
+    
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="styles/theme.css">
+    <link rel="stylesheet" href="styles/animations.css">
+    <link rel="stylesheet" href="styles/landing.css">
 </head>
 <body>
-    <!-- Header -->
-    <header class="header">
-        <div class="container">
-            <h1 class="logo">💰 Money Mate</h1>
-            <div class="header-right">
-                <nav class="nav" id="nav-menu" role="navigation">
-                    <a href="index.html" class="nav-link">Home</a>
-                    <a href="about.html" class="nav-link">About Us</a>
-                    <a href="contact.html" class="nav-link">Contact Us</a>
-                </nav>
-                <button id="theme-toggle" class="btn-icon" aria-label="Toggle dark mode">
-                    🌙
-                </button>
-                <button class="hamburger" id="hamburger-menu" aria-label="Toggle menu">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
-            </div>
-        </div>
-    </header>
+    <!-- Dynamic Header (loaded by contextualPages.js) -->
+    <div id="dynamic-header"></div>
 
     <!-- Main Content -->
     <main class="main-content">
@@ -85,56 +72,13 @@
         </div>
     </main>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <p>&copy; 2025 Money Mate. All rights reserved.</p>
-        </div>
-    </footer>
+    <!-- Dynamic Footer (loaded by contextualPages.js) -->
+    <div id="dynamic-footer"></div>
 
-    <script type="module" src="js/modules/theme.js"></script>
-    <script>
-        // Initialize theme toggle
-        import('./js/modules/theme.js').then(module => {
-            const theme = new module.ThemeManager();
-            theme.init();
-
-            // Add theme toggle event listener
-            const themeToggle = document.getElementById('theme-toggle');
-            if (themeToggle) {
-                themeToggle.addEventListener('click', () => theme.toggle());
-            }
-        });
-
-        // Hamburger Menu
-        document.addEventListener('DOMContentLoaded', () => {
-            const hamburger = document.getElementById('hamburger-menu');
-            const navMenu = document.getElementById('nav-menu');
-            
-            if (hamburger && navMenu) {
-                hamburger.addEventListener('click', () => {
-                    hamburger.classList.toggle('active');
-                    navMenu.classList.toggle('active');
-                });
-                
-                // Close menu when clicking nav links
-                const navLinks = navMenu.querySelectorAll('.nav-link');
-                navLinks.forEach(link => {
-                    link.addEventListener('click', () => {
-                        hamburger.classList.remove('active');
-                        navMenu.classList.remove('active');
-                    });
-                });
-                
-                // Close menu when clicking outside
-                document.addEventListener('click', (e) => {
-                    if (!hamburger.contains(e.target) && !navMenu.contains(e.target)) {
-                        hamburger.classList.remove('active');
-                        navMenu.classList.remove('active');
-                    }
-                });
-            }
-        });
-    </script>
+    <!-- Toast Notification -->
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    
+    <!-- Contextual Pages Script -->
+    <script type="module" src="js/contextualPages.js"></script>
 </body>
 </html>

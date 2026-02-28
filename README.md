@@ -2,7 +2,7 @@
 
 A modern, feature-rich personal finance tracker built with vanilla HTML, CSS, and JavaScript. Track your income, expenses, set budgets, and gain insights into your spending habits with a beautiful, responsive interface.
 
-🌐 **Live Demo**: [https://nextgendev2029.github.io/OJT_2025_MoneyMate/](https://nextgendev2029.github.io/OJT_2025_MoneyMate/)
+🌐 **Live Demo**: [https://moneymate3-0.netlify.app](https://moneymate3-0.netlify.app)
 
 ## ✨ Features
 
